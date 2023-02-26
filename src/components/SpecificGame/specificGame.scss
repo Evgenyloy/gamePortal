@@ -1,0 +1,10 @@
+.game {
+  max-width: 450px;
+  padding: 60px;
+  &__description {
+    font-weight: 400;
+    font-size: 18px;
+    padding: 4px;
+    line-height: 20px;
+  }
+}

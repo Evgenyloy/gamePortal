@@ -1,0 +1,12 @@
+.header {
+  &__title {
+    padding: 40px 0;
+    color: #f4b838;
+    font-size: 32px;
+    font-weight: 600;
+  }
+  span {
+    color: #222626;
+  }
+  border-bottom: 1px solid #000;
+}

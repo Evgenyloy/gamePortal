@@ -1,0 +1,27 @@
+.gameList {
+  padding-top: 60px;
+  padding-bottom: 60px;
+  &__inner {
+    display: grid;
+    grid-template-columns: repeat(3, 240px);
+    grid-template-rows: repeat(3, 220px);
+    grid-gap: 15px;
+  }
+  &__item {
+    display: flex;
+    border-radius: 4px;
+    box-shadow: 4px 4px 8px 0px rgba(34, 60, 80, 0.2);
+  }
+  &__img {
+    background-color: lightgrey;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  &__text {
+    font-size: 18px;
+    text-align: left;
+    padding: 15px;
+    color: black;
+  }
+}
