@@ -1,7 +1,12 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
+
+import Slider from 'react-slick';
 import NewsService from '../../services/services';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import Spinner from '../Spinner/Spinner';
+
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 import './news.scss';
 
 class News extends Component {
@@ -20,6 +25,9 @@ class News extends Component {
     this.newsList();
   }
 
+  onClick = () => {
+    console.log('sd');
+  };
   onNewsLoaded = (news) => {
     let newsArr = news.slice(0, 4);
 
@@ -38,14 +46,15 @@ class News extends Component {
   };
 
   renderItems = (arr) => {
-    let num = 1;
+    let newsItemNum = 1;
+    let tabIndex = 1;
     const items = arr.map(
       ({ thumbnail, title, short_description, id, main_image }) => {
-        let className = `news__item news__item${num++}`;
+        let className = `news__item news__item${newsItemNum++}`;
 
         return (
-          <div className={className} key={id}>
-            <a href="#">
+          <div className={className} key={id} tabIndex={tabIndex++}>
+            <a className="news__link" href="#">
               <img className="news__img" src={main_image} alt="thumbnail" />
             </a>
             <div className="news__title">{title}</div>
@@ -59,6 +68,7 @@ class News extends Component {
 
   render() {
     const { newsList, loading, error } = this.state;
+    console.log(newsList);
 
     const items = this.renderItems(newsList);
 
@@ -67,15 +77,28 @@ class News extends Component {
     const content = !(loading || error) ? items : null;
 
     const className = spinner || error ? 'news__spinner' : 'news__inner';
+
+    const news = (
+      <>
+        <div className={className}>
+          {errorMessage}
+          {spinner}
+          {content}
+        </div>
+      </>
+    );
+
     return (
       <div className="news">
         <div className="container">
-          <h2 className="news__last">Last news</h2>
-          <div className={className}>
-            {errorMessage}
-            {spinner}
-            {content}
+          <div className="news__top">
+            <div className="news__info">Last news</div>
+            <div className="news__button button" tabIndex={5}>
+              <a href="">browse all</a>
+            </div>
           </div>
+
+          {news}
         </div>
       </div>
     );

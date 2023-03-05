@@ -1,6 +1,10 @@
 import { Component } from 'react';
 import PortalService from '../../services/services';
+import Spinner from '../Spinner/Spinner';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import '../GameList/gameList.scss';
+import { DiWindows } from 'react-icons/di';
+import { TbBrowser } from 'react-icons/tb';
 
 class GameList extends Component {
   constructor(props) {
@@ -19,11 +23,12 @@ class GameList extends Component {
   }
 
   onGamesLoaded = (games) => {
-    const game = games.slice(10, 19);
+    const game = games.slice(20, 32);
     this.setState({ gamesList: game, loading: false });
   };
+
   onError = () => {
-    this.setState({ error: true });
+    this.setState({ error: true, loading: false });
   };
 
   getAllGames = () => {
@@ -34,16 +39,30 @@ class GameList extends Component {
   };
 
   renderItems = (arr) => {
-    const item = arr.map(({ id, title, thumbnail, genre }) => {
-      return (
-        <li className="gameList__item" key={id}>
-          <a href="#" className="gameList__link">
-            <img src={thumbnail} alt="" className="gameList__img" />
-            <div className="gameList__text">{title}</div>
-          </a>
-        </li>
-      );
-    });
+    const item = arr.map(
+      ({ id, title, thumbnail, genre, short_description, platform }) => {
+        const gif = platform === 'Web Browser' ? <TbBrowser /> : <DiWindows />;
+
+        return (
+          <li className="gamelist__item" key={id}>
+            <div className="gamelist__img-cont">
+              <img src={thumbnail} alt="" className="gamelist__img" />
+            </div>
+
+            <a className="gamelist__link" href="#">
+              <h3 className="gamelist__title">{title}</h3>
+            </a>
+
+            <p className="gamelist__desc">{short_description}</p>
+
+            <div className="gamelist__genre">
+              {genre}
+              {gif}
+            </div>
+          </li>
+        );
+      }
+    );
 
     return item;
   };
@@ -52,12 +71,25 @@ class GameList extends Component {
     const { error, loading, gamesList } = this.state;
 
     const content = this.renderItems(gamesList);
+    const spinner = loading ? <Spinner /> : null;
+    const errorMessage = error ? <ErrorMessage /> : null;
 
-    console.log(gamesList);
+    const className = loading
+      ? 'gamelist__spinner'
+      : error
+      ? null
+      : 'gamelist__inner';
 
     return (
-      <div className="gameList">
-        <ul className="gameList__inner">{content}</ul>
+      <div className="gamelist">
+        <div className="container">
+          <div className="gamelist-filter">sdfsdfsfd</div>
+          <ul className={className}>
+            {spinner}
+            {errorMessage}
+            {content}
+          </ul>
+        </div>
       </div>
     );
   }

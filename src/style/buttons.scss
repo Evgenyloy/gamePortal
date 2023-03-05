@@ -1,0 +1,28 @@
+.button {
+  border: 1px solid $button-color;
+  border-radius: 4px;
+  transition: all 0.1s linear;
+  a {
+    padding: 9px 15px;
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 600;
+    color: $button-color;
+    transition: all 0.1s linear;
+    text-transform: uppercase;
+  }
+  &:hover {
+    background-color: $button-color;
+  }
+  &:hover a {
+    color: #fff;
+  }
+}
+
+@media (max-width: 790px) {
+  .button {
+    a {
+      padding: 5px 10px;
+    }
+  }
+} ;

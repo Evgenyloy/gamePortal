@@ -1,6 +1,7 @@
 class PortalService {
   _news = 'https://mmo-games.p.rapidapi.com/latestnews';
-  _mmo = 'https://mmo-games.p.rapidapi.com/games?category=mmorpg';
+
+  _mmo = 'https://mmo-games.p.rapidapi.com/games?category=';
   _allGames = 'https://mmo-games.p.rapidapi.com/games';
   _specificGame = 'https://mmo-games.p.rapidapi.com/game?id=452';
 
@@ -26,8 +27,10 @@ class PortalService {
     return res;
   };
 
-  getMmo = async () => {
-    const res = await this.getResource(this._mmo);
+  getCategory = async (category) => {
+    const res = await this.getResource(this._mmo + category);
+    console.log(category);
+
     return res;
   };
 

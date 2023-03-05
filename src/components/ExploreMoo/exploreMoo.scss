@@ -1,6 +1,6 @@
 .mmo {
-  padding: 50px;
-  background-color: #e4e7ed91;
+  padding: 40px 0;
+  background-color: #cdcfd491;
 
   &__top-side {
     display: flex;
@@ -8,57 +8,51 @@
     align-items: center;
     padding-top: 10px;
     padding-bottom: 10px;
-    margin-bottom: 10px;
-  }
-
-  &__btn {
-    border: 1px solid #8e8c84;
-    border-radius: 4px;
-    transition: all 0.1s linear;
-    a {
-      padding: 9px 15px;
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: #8e8c84;
-      transition: all 0.1s linear;
-      text-transform: uppercase;
-    }
-    &:hover {
-      background-color: #8e8c84;
-    }
-    &:hover a {
-      color: white;
-    }
   }
 
   &__title {
     font-size: 20px;
+    font-size: calc(17px + 0.390625vw);
     color: #3e3f3a;
     font-weight: 500;
+    text-transform: uppercase;
   }
 
   &__inner {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 215px;
-    grid-column-gap: 20px;
+
+    grid-column-gap: 10px;
+    grid-row-gap: 10px;
   }
 
   &__item {
-    display: flex;
     border-radius: 4px;
     background-color: white;
+    transition: all 0.1s linear;
+    &:hover {
+      box-shadow: 4px 4px 8px 0px rgba(51, 47, 49, 0.3);
+    }
+    &:focus-within {
+      outline: 3px solid orange;
+    }
   }
 
+  &__img-cont {
+    position: relative;
+    height: 180px;
+  }
   &__img {
-    background-color: lightgrey;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: cover;
   }
+
   &__disc {
-    font-size: 24px;
+    font-size: calc(16px + 4 * ((100vw - 320px) / (1280 - 320)));
     text-align: center;
     padding: 15px;
     color: #8e8c84;
@@ -67,5 +61,31 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+}
+
+@media (max-width: 880px) {
+  .mmo {
+    padding: 30px 0;
+    &__inner {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    &__top-side {
+      margin-bottom: 10px;
+    }
+  }
+}
+@media (max-width: 460px) {
+  .mmo {
+    padding: 20px 0;
+    &__inner {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+    }
+    &__top-side {
+      margin-bottom: 10px;
+    }
   }
 }
