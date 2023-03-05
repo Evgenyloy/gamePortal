@@ -8,7 +8,7 @@ class PortalService {
   _options = {
     method: 'GET',
     headers: {
-      'X-RapidAPI-Key': '91b58b67a8msh2bd4b616724fea5p1339a3jsn28cd7698ccec',
+      'X-RapidAPI-Key': '',
       'X-RapidAPI-Host': 'mmo-games.p.rapidapi.com',
     },
   };
