@@ -1,5 +1,5 @@
 class PortalService {
-  _news = 'https://mmo-games.p.rapidapi.com/latestnews';
+  _news = 'https://mmo-games.p.rapidapi.com/latestnews'; /* ?id=133893 */
 
   _mmo = 'https://mmo-games.p.rapidapi.com/games?category=';
   _allGames = 'https://mmo-games.p.rapidapi.com/games';
@@ -8,7 +8,7 @@ class PortalService {
   _options = {
     method: 'GET',
     headers: {
-      'X-RapidAPI-Key': '',
+      'X-RapidAPI-Key': '91b58b67a8msh2bd4b616724fea5p1339a3jsn28cd7698ccec',
       'X-RapidAPI-Host': 'mmo-games.p.rapidapi.com',
     },
   };
@@ -29,7 +29,6 @@ class PortalService {
 
   getCategory = async (category) => {
     const res = await this.getResource(this._mmo + category);
-    console.log(category);
 
     return res;
   };

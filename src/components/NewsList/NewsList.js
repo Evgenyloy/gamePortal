@@ -1,4 +1,6 @@
 import { Component } from 'react';
+import { Link } from 'react-router-dom';
+
 import PortalService from '../../services/services';
 import Spinner from '../Spinner/Spinner';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
@@ -56,7 +58,8 @@ class NewsList extends Component {
   };
 
   renderItems = (arr) => {
-    const item = arr.map(({ short_description, title, thumbnail, id }) => {
+    const item = arr.map((item) => {
+      const { short_description, title, thumbnail, id } = item;
       return (
         <li className="news-list__item" key={id}>
           <div className="news-list__img-cont">
@@ -64,9 +67,15 @@ class NewsList extends Component {
           </div>
           <div className="news-list__content-cont">
             <h3 className="news-list__title">{title}</h3>
-            <a className="news-list__desc" href="">
+            <Link
+              className="news-list__desc"
+              to="/news"
+              onClick={() => {
+                this.props.onSelectedNews(item);
+              }}
+            >
               {short_description}
-            </a>
+            </Link>
           </div>
         </li>
       );
@@ -81,8 +90,6 @@ class NewsList extends Component {
     const errorMessage = error ? <ErrorMessage /> : null;
     const spinner = loading ? <Spinner /> : null;
     const content = !(loading || error) ? items : null;
-
-    console.log(newsList);
 
     return (
       <div className="news-list">

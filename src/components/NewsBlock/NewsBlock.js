@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 import Slider from 'react-slick';
 import NewsService from '../../services/services';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import Spinner from '../Spinner/Spinner';
+import Test from '../Test/Test';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import './news.scss';
+import './newsBlock.scss';
 
-class News extends Component {
+class NewsBlock extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,11 +27,9 @@ class News extends Component {
     this.newsList();
   }
 
-  onClick = () => {
-    console.log('sd');
-  };
   onNewsLoaded = (news) => {
-    let newsArr = news.slice(0, 4);
+    const news2 = news.filter((news) => !news.article_content.includes('&lt'));
+    let newsArr = news2.slice(0, 4);
 
     this.setState({ newsList: newsArr, loading: false });
   };
@@ -48,27 +48,39 @@ class News extends Component {
   renderItems = (arr) => {
     let newsItemNum = 1;
     let tabIndex = 1;
-    const items = arr.map(
-      ({ thumbnail, title, short_description, id, main_image }) => {
-        let className = `news__item news__item${newsItemNum++}`;
+    const items = arr.map((item) => {
+      let className = `news__item news__item${newsItemNum++}`;
 
-        return (
-          <div className={className} key={id} tabIndex={tabIndex++}>
-            <a className="news__link" href="#">
-              <img className="news__img" src={main_image} alt="thumbnail" />
-            </a>
-            <div className="news__title">{title}</div>
-          </div>
-        );
-      }
-    );
+      const {
+        thumbnail,
+        title,
+        short_description,
+        id,
+        main_image,
+        article_content,
+      } = item;
+
+      return (
+        <div className={className} key={id} tabIndex={tabIndex++}>
+          <Link
+            className="news__link"
+            to="/news"
+            onClick={() => {
+              this.props.onSelectedNews(item);
+            }}
+          >
+            <img className="news__img" src={main_image} alt="thumbnail" />
+          </Link>
+          <div className="news__title">{title}</div>
+        </div>
+      );
+    });
 
     return items;
   };
 
   render() {
     const { newsList, loading, error } = this.state;
-    console.log(newsList);
 
     const items = this.renderItems(newsList);
 
@@ -105,4 +117,4 @@ class News extends Component {
   }
 }
 
-export default News;
+export default NewsBlock;

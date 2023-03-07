@@ -1,0 +1,40 @@
+.certain-news {
+  padding: 50px 0;
+  width: 750px;
+  margin: 0 auto;
+  &__title {
+    font-size: 42px;
+    font-weight: 450;
+    line-height: 1.2;
+    color: #3e3f3a;
+    margin-bottom: 15px;
+  }
+  &__desc {
+    font-size: 22px;
+    color: #8e8c84;
+    font-weight: 450;
+    line-height: 1.1;
+  }
+  a {
+    text-decoration: none;
+    color: red;
+    /*   pointer-events: none; */
+  }
+  img {
+    margin-bottom: 20px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 3px;
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.5;
+    color: #3e3f3a;
+    margin-bottom: 15px;
+  }
+
+  iframe {
+    width: 100%;
+  }
+}

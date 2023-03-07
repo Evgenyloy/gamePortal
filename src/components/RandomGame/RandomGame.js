@@ -76,7 +76,6 @@ class RandomGame extends Component {
 
   render() {
     const { randomGames, error, loading } = this.state;
-    console.log(randomGames);
 
     const content = this.renderItems(randomGames);
     return (
