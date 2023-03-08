@@ -48,7 +48,9 @@ class NewsList extends Component {
   };
 
   onNewsLoading = (news) => {
-    const newsList = news.slice(0, this.state.itemPerPage);
+    const news2 = news.filter((news) => !news.article_content.includes('&lt'));
+
+    const newsList = news2.slice(4, this.state.itemPerPage);
 
     this.setState({ newsList, loading: false });
   };
@@ -104,7 +106,7 @@ class NewsList extends Component {
             </div>
             <div className="news-list__col-2">
               <div className="container">
-                <RandomGame />
+                <RandomGame onGameSelected={this.props.onGameSelected} />
               </div>
             </div>
           </div>

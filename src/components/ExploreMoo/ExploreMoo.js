@@ -1,4 +1,6 @@
 import { Component } from 'react';
+import { Link } from 'react-router-dom';
+
 import Spinner from '../Spinner/Spinner';
 
 import PortalService from '../../services/services';
@@ -42,13 +44,17 @@ class ExploreMmo extends Component {
     let tabIndex = 5;
     const items = arr.map(({ thumbnail, title, id }) => {
       return (
-        <div className="mmo__item" key={id} /* tabIndex={tabIndex++} */>
-          <a className="mmo__link" href="#">
+        <div className="mmo__item" key={id}>
+          <Link
+            className="mmo__link"
+            to="/game"
+            onClick={() => this.props.onGameSelected(id)}
+          >
             <div className="mmo__img-cont">
               <img className="mmo__img" src={thumbnail} alt="" />
             </div>
-            <div className="mmo__disc">{title}</div>
-          </a>
+            <div className="mmo__desc">{title}</div>
+          </Link>
         </div>
       );
     });
@@ -71,7 +77,7 @@ class ExploreMmo extends Component {
           <div className="mmo__top-side">
             <div className="mmo__title">Explore mmo games</div>
             <div className="mmo__button button">
-              <a href="">browse all </a>
+              <Link to="/games">browse all </Link>
             </div>
           </div>
 

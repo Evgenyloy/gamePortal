@@ -106,7 +106,7 @@ class NewsBlock extends Component {
           <div className="news__top">
             <div className="news__info">Last news</div>
             <div className="news__button button" tabIndex={5}>
-              <a href="">browse all</a>
+              <Link to="/all-news">browse all</Link>
             </div>
           </div>
 

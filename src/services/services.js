@@ -1,9 +1,9 @@
 class PortalService {
-  _news = 'https://mmo-games.p.rapidapi.com/latestnews'; /* ?id=133893 */
+  _news = 'https://mmo-games.p.rapidapi.com/latestnews';
 
   _mmo = 'https://mmo-games.p.rapidapi.com/games?category=';
   _allGames = 'https://mmo-games.p.rapidapi.com/games';
-  _specificGame = 'https://mmo-games.p.rapidapi.com/game?id=452';
+  _specificGame = 'https://mmo-games.p.rapidapi.com/game?id=';
 
   _options = {
     method: 'GET',
@@ -38,8 +38,8 @@ class PortalService {
     return res;
   };
 
-  getSpecificGame = async () => {
-    const res = await this.getResource(this._specificGame);
+  getSpecificGame = async (game) => {
+    const res = await this.getResource(this._specificGame + game);
     return res;
   };
 

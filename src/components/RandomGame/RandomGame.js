@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { Link } from 'react-router-dom';
 import PortalService from '../../services/services';
 import './randomGame.scss';
 
@@ -64,9 +65,13 @@ class RandomGame extends Component {
             <img src={thumbnail} alt="" className="random-game__img" />
           </div>
           <div className="random-game__content">
-            <a href="" className="random-game__link">
+            <Link
+              to="/game"
+              className="random-game__link"
+              onClick={() => this.props.onGameSelected(id)}
+            >
               <p className="random-game__text line-clamp">{desc}</p>
-            </a>
+            </Link>
           </div>
         </li>
       );

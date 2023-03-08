@@ -40,7 +40,7 @@
 
   &__img-cont {
     position: relative;
-    height: 180px;
+    height: 160px;
   }
   &__img {
     position: absolute;
@@ -51,10 +51,10 @@
     object-fit: cover;
   }
 
-  &__disc {
+  &__desc {
     font-size: calc(16px + 4 * ((100vw - 320px) / (1280 - 320)));
     text-align: center;
-    padding: 15px;
+    padding: 13px;
     color: #8e8c84;
   }
   &__spinner {

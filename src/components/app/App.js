@@ -14,10 +14,16 @@ class App extends Component {
     super(props);
     this.state = {
       selectedNews: {},
+      selectedGame: {},
     };
   }
+
   onSelectedNews = (selectedNews) => {
     this.setState({ selectedNews });
+  };
+
+  onGameSelected = (selectedGame) => {
+    this.setState({ selectedGame });
   };
 
   render() {
@@ -28,18 +34,26 @@ class App extends Component {
           <Switch>
             <Route exact path="/">
               <NewsBlock onSelectedNews={this.onSelectedNews} />
-              <ExploreMmo />
-              <NewsList onSelectedNews={this.onSelectedNews} />
+              <ExploreMmo onGameSelected={this.onGameSelected} />
+              <NewsList
+                onSelectedNews={this.onSelectedNews}
+                onGameSelected={this.onGameSelected}
+              />
             </Route>
 
             <Route exact path="/news">
-              {/* починить расположение блока на экране */}
               <CertainNews news={this.state.selectedNews} />
             </Route>
+            <Route exact path="/game">
+              <SpecificGame game={this.state.selectedGame} />
+            </Route>
+            <Route exact path="/all-news">
+              <NewsList />
+            </Route>
+            <Route exact path="/games">
+              <GameList />
+            </Route>
           </Switch>
-
-          {/* <GameList />
-        <SpecificGame /> */}
         </div>
       </Router>
     );
