@@ -4,7 +4,6 @@
   padding-bottom: 60px;
   display: flex;
   flex-direction: column;
-  height: 900px;
 
   &__inner {
     position: relative;
@@ -107,6 +106,7 @@
   }
 }
 
+//--------------------------------------------------------------------------------------
 @media (max-width: 880px) {
   .gamelist {
     &__inner {

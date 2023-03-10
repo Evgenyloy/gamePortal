@@ -8,7 +8,7 @@ import GameList from '../GameList/GameList';
 import SpecificGame from '../SpecificGame/SpecificGame';
 import NewsList from '../NewsList/NewsList';
 import CertainNews from '../CertainNews/CertainNews';
-
+/* перенести фильтр, сделать ссылки по клику, оформление */
 class App extends Component {
   constructor(props) {
     super(props);
@@ -51,7 +51,11 @@ class App extends Component {
               <NewsList />
             </Route>
             <Route exact path="/games">
-              <GameList />
+              <GameList
+                exact
+                path="/game"
+                onGameSelected={this.onGameSelected}
+              />
             </Route>
           </Switch>
         </div>

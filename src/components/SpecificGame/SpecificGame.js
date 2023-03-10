@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PortalService from '../../services/services';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
+import Spinner from '../Spinner/Spinner';
 import '../SpecificGame/specificGame.scss';
 
 class SpecificGame extends Component {
@@ -14,8 +16,10 @@ class SpecificGame extends Component {
       description: localStorage.getItem('description')
         ? JSON.parse(localStorage.getItem('description'))
         : '',
+      gameId: this.props.game,
     };
 
+    this.gameIdd = this.props.game;
     this.myRef = React.createRef();
 
     this.portalService = new PortalService();
@@ -69,10 +73,10 @@ class SpecificGame extends Component {
       title,
     } = this.state.game;
 
-    console.log(minimum_system_requirements);
+    const spinner = loading ? <Spinner /> : null;
+    const errorMessage = error ? <ErrorMessage /> : null;
 
-    /* const { os, memory, graphics, processor, storage } =
-      minimumSystemRequirements; */
+    let className = loading || error ? 'gamelist__spinner' : 'gamelist__inner';
 
     return (
       <div className="game">

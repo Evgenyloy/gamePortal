@@ -1,8 +1,12 @@
 import { Component } from 'react';
+import { Link } from 'react-router-dom';
+
 import PortalService from '../../services/services';
+import Filter from '../Filter/Filter';
 import Spinner from '../Spinner/Spinner';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import '../GameList/gameList.scss';
+
 import { DiWindows } from 'react-icons/di';
 import { TbBrowser } from 'react-icons/tb';
 
@@ -13,6 +17,11 @@ class GameList extends Component {
       gamesList: [],
       loading: true,
       error: false,
+      itemPerPage: 12,
+      currentArr: null,
+      platformSelected: 'all',
+      categorySelected: 'mmorpg',
+      sortBy: 'relevance',
     };
 
     this.portalService = new PortalService();
@@ -20,11 +29,26 @@ class GameList extends Component {
 
   componentDidMount() {
     this.getAllGames();
+    document.addEventListener('scroll', this.scrollHandler);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      this.state.platformSelected !== prevState.platformSelected ||
+      this.state.categorySelected !== prevState.categorySelected ||
+      this.state.sortBy !== prevState.sortBy
+    ) {
+      this.getAllGames();
+    }
   }
 
   onGamesLoaded = (games) => {
-    const game = games.slice(20, 32);
-    this.setState({ gamesList: game, loading: false });
+    const game = games.slice(0, this.state.itemPerPage);
+    this.setState({
+      gamesList: game,
+      loading: false,
+      currentArr: games.length,
+    });
   };
 
   onError = () => {
@@ -33,15 +57,47 @@ class GameList extends Component {
 
   getAllGames = () => {
     this.portalService
-      .getAllGames()
+      .getFilterdGame(
+        this.state.platformSelected,
+        this.state.categorySelected,
+        this.state.sortBy
+      )
+
       .then(this.onGamesLoaded)
       .catch(this.onError);
+  };
+
+  onFilterSelected = (e) => {
+    this.setState({ [e.target.id]: e.target.dataset.value });
+  };
+
+  scrollHandler = (e) => {
+    const scrollHeight = e.target.documentElement.scrollHeight;
+    const scrollTop = e.target.documentElement.scrollTop;
+    const innerHeight = window.innerHeight;
+
+    if (
+      scrollHeight - (scrollTop + innerHeight) < 50 &&
+      this.state.gamesList.length < this.state.currentArr
+    ) {
+      this.setState(() => ({
+        itemPerPage: this.state.itemPerPage + 12,
+      }));
+
+      this.getAllGames();
+    }
   };
 
   renderItems = (arr) => {
     const item = arr.map(
       ({ id, title, thumbnail, genre, short_description, platform }) => {
-        const gif = platform === 'Web Browser' ? <TbBrowser /> : <DiWindows />;
+        const gif =
+          platform === 'PC (Windows), Web Browser' ||
+          platform === 'Web Browser' ? (
+            <TbBrowser />
+          ) : (
+            <DiWindows />
+          );
 
         return (
           <li className="gamelist__item" key={id}>
@@ -49,9 +105,13 @@ class GameList extends Component {
               <img src={thumbnail} alt="" className="gamelist__img" />
             </div>
 
-            <a className="gamelist__link" href="#">
+            <Link
+              className="gamelist__link"
+              to="/game"
+              onClick={() => this.props.onGameSelected(id)}
+            >
               <h3 className="gamelist__title">{title}</h3>
-            </a>
+            </Link>
 
             <p className="gamelist__desc">{short_description}</p>
 
@@ -74,16 +134,12 @@ class GameList extends Component {
     const spinner = loading ? <Spinner /> : null;
     const errorMessage = error ? <ErrorMessage /> : null;
 
-    const className = loading
-      ? 'gamelist__spinner'
-      : error
-      ? null
-      : 'gamelist__inner';
+    let className = loading || error ? 'gamelist__spinner' : 'gamelist__inner';
 
     return (
       <div className="gamelist">
         <div className="container">
-          <div className="gamelist-filter">sdfsdfsfd</div>
+          <Filter onFilterSelected={this.onFilterSelected} />
           <ul className={className}>
             {spinner}
             {errorMessage}

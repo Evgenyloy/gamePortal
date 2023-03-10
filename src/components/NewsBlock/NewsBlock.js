@@ -5,7 +5,6 @@ import Slider from 'react-slick';
 import NewsService from '../../services/services';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import Spinner from '../Spinner/Spinner';
-import Test from '../Test/Test';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
