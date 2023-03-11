@@ -65,7 +65,7 @@ class NewsBlock extends Component {
             className="news__link"
             to="/news"
             onClick={() => {
-              this.props.onSelectedNews(item);
+              this.props.onNewsSelected(item);
             }}
           >
             <img className="news__img" src={main_image} alt="thumbnail" />

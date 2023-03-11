@@ -73,7 +73,7 @@ class NewsList extends Component {
               className="news-list__desc"
               to="/news"
               onClick={() => {
-                this.props.onSelectedNews(item);
+                this.props.onNewsSelected(item);
               }}
             >
               {short_description}

@@ -8,17 +8,19 @@ import GameList from '../GameList/GameList';
 import SpecificGame from '../SpecificGame/SpecificGame';
 import NewsList from '../NewsList/NewsList';
 import CertainNews from '../CertainNews/CertainNews';
-/* перенести фильтр, сделать ссылки по клику, оформление */
+import Popup from '../Popup/Popup';
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedNews: {},
       selectedGame: {},
+      popupTogler: false,
     };
   }
 
-  onSelectedNews = (selectedNews) => {
+  onNewsSelected = (selectedNews) => {
     this.setState({ selectedNews });
   };
 
@@ -26,17 +28,34 @@ class App extends Component {
     this.setState({ selectedGame });
   };
 
+  componentDidMount() {
+    window.addEventListener('resize', (e) => {
+      if (window.innerWidth > 650) {
+        this.setState({ popupTogler: false });
+        document.body.classList.remove('noscroll');
+      }
+    });
+  }
+
+  onBurgerClick = () => {
+    this.setState({ popupTogler: !this.state.popupTogler });
+  };
+
   render() {
     return (
       <Router>
         <div className="App">
-          <Header />
+          <Header
+            onBurgerClick={this.onBurgerClick}
+            popupTogler={this.state.popupTogler}
+          />
+          <Popup popup={this.state.popupTogler} />
           <Switch>
             <Route exact path="/">
-              <NewsBlock onSelectedNews={this.onSelectedNews} />
+              <NewsBlock onNewsSelected={this.onNewsSelected} />
               <ExploreMmo onGameSelected={this.onGameSelected} />
               <NewsList
-                onSelectedNews={this.onSelectedNews}
+                onNewsSelected={this.onNewsSelected}
                 onGameSelected={this.onGameSelected}
               />
             </Route>
