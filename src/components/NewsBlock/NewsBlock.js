@@ -27,8 +27,10 @@ class NewsBlock extends Component {
   }
 
   onNewsLoaded = (news) => {
-    const news2 = news.filter((news) => !news.article_content.includes('&lt'));
-    let newsArr = news2.slice(0, 4);
+    const filteredNews = news.filter(
+      (news) => !news.article_content.includes('&lt')
+    );
+    let newsArr = filteredNews.slice(0, 4);
 
     this.setState({ newsList: newsArr, loading: false });
   };
@@ -46,21 +48,13 @@ class NewsBlock extends Component {
 
   renderItems = (arr) => {
     let newsItemNum = 1;
-    let tabIndex = 1;
     const items = arr.map((item) => {
       let className = `news__item news__item${newsItemNum++}`;
 
-      const {
-        thumbnail,
-        title,
-        short_description,
-        id,
-        main_image,
-        article_content,
-      } = item;
+      const { title, id, main_image } = item;
 
       return (
-        <div className={className} key={id} tabIndex={tabIndex++}>
+        <div className={className} key={id}>
           <Link
             className="news__link"
             to="/news"
@@ -89,27 +83,20 @@ class NewsBlock extends Component {
 
     const className = spinner || error ? 'news__spinner' : 'news__inner';
 
-    const news = (
-      <>
-        <div className={className}>
-          {errorMessage}
-          {spinner}
-          {content}
-        </div>
-      </>
-    );
-
     return (
       <div className="news">
         <div className="container">
           <div className="news__top">
             <div className="news__info">Last news</div>
-            <div className="news__button button" tabIndex={5}>
+            <div className="news__button button">
               <Link to="/all-news">browse all</Link>
             </div>
           </div>
-
-          {news}
+          <div className={className}>
+            {errorMessage}
+            {spinner}
+            {content}
+          </div>
         </div>
       </div>
     );

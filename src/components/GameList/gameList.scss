@@ -4,6 +4,7 @@
   padding-bottom: 60px;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 
   &__inner {
     position: relative;

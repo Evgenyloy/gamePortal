@@ -1,14 +1,14 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { DiWindows } from 'react-icons/di';
+import { TbBrowser } from 'react-icons/tb';
 
 import PortalService from '../../services/services';
 import Filter from '../Filter/Filter';
 import Spinner from '../Spinner/Spinner';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
-import '../GameList/gameList.scss';
 
-import { DiWindows } from 'react-icons/di';
-import { TbBrowser } from 'react-icons/tb';
+import '../GameList/gameList.scss';
 
 class GameList extends Component {
   constructor(props) {
@@ -19,9 +19,6 @@ class GameList extends Component {
       error: false,
       itemPerPage: 12,
       currentArr: null,
-      platformSelected: 'all',
-      categorySelected: 'mmorpg',
-      sortBy: 'relevance',
     };
 
     this.portalService = new PortalService();
@@ -32,14 +29,18 @@ class GameList extends Component {
     document.addEventListener('scroll', this.scrollHandler);
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (
-      this.state.platformSelected !== prevState.platformSelected ||
-      this.state.categorySelected !== prevState.categorySelected ||
-      this.state.sortBy !== prevState.sortBy
+      this.props.platformSelected !== prevProps.platformSelected ||
+      this.props.categorySelected !== prevProps.categorySelected ||
+      this.props.sortBy !== prevProps.sortBy
     ) {
       this.getAllGames();
     }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('scroll', this.scrollHandler);
   }
 
   onGamesLoaded = (games) => {
@@ -48,27 +49,23 @@ class GameList extends Component {
       gamesList: game,
       loading: false,
       currentArr: games.length,
+      error: false,
     });
   };
 
   onError = () => {
-    this.setState({ error: true, loading: false });
+    this.setState({ error: true, loading: false, gamesList: [] });
   };
 
   getAllGames = () => {
     this.portalService
       .getFilterdGame(
-        this.state.platformSelected,
-        this.state.categorySelected,
-        this.state.sortBy
+        this.props.platformSelected,
+        this.props.categorySelected,
+        this.props.sortBy
       )
-
       .then(this.onGamesLoaded)
       .catch(this.onError);
-  };
-
-  onFilterSelected = (e) => {
-    this.setState({ [e.target.id]: e.target.dataset.value });
   };
 
   scrollHandler = (e) => {
@@ -77,7 +74,7 @@ class GameList extends Component {
     const innerHeight = window.innerHeight;
 
     if (
-      scrollHeight - (scrollTop + innerHeight) < 50 &&
+      scrollHeight - (scrollTop + innerHeight) < 45 &&
       this.state.gamesList.length < this.state.currentArr
     ) {
       this.setState(() => ({
@@ -139,7 +136,12 @@ class GameList extends Component {
     return (
       <div className="gamelist">
         <div className="container">
-          <Filter onFilterSelected={this.onFilterSelected} />
+          <Filter
+            onFilterSelected={this.props.onFilterSelected}
+            platformSelected={this.props.platformSelected}
+            categorySelected={this.props.categorySelected}
+            sortBy={this.props.sortBy}
+          />
           <ul className={className}>
             {spinner}
             {errorMessage}

@@ -34,7 +34,7 @@
       box-shadow: 4px 4px 8px 0px rgba(51, 47, 49, 0.3);
     }
     &:focus-within {
-      outline: 3px solid orange;
+      outline: 2px solid orange;
     }
   }
 
@@ -50,17 +50,43 @@
     height: 100%;
     object-fit: cover;
   }
-
+  &__desc-inner {
+    padding: 13px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   &__desc {
-    font-size: calc(16px + 4 * ((100vw - 320px) / (1280 - 320)));
+    font-weight: 450;
+    display: inline-block;
+    font-size: 19px;
     text-align: center;
-    padding: 13px;
+
     color: #8e8c84;
+    &::first-letter {
+      text-transform: uppercase;
+    }
+  }
+  &__free {
+    font-weight: 600;
+    color: #fff;
+    font-size: 12px;
+    text-transform: uppercase;
+    padding: 3px 4px;
+    background-color: #93c54b;
+    border-radius: 5px;
+    letter-spacing: 0.5px;
   }
   &__spinner {
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 196.63px;
+  }
+  &__button {
+    &:focus-within {
+      outline: 2px solid orange;
+    }
   }
 }
 

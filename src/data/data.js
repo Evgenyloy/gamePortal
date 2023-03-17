@@ -46,4 +46,15 @@ const tagList1 = [
   'mmorts',
 ];
 
-export default tagList1;
+const tagsData = [
+  { name: 'Free MMORPG', data: 'mmorpg' },
+  { name: 'FPS Games', data: 'mmotps' },
+  { name: 'Anime Games', data: 'anime' },
+  { name: 'Battle Royale Games', data: 'battle-royale' },
+  { name: 'MMOFPS', data: 'mmofps' },
+  { name: 'Open World', data: 'open-world' },
+  { name: 'MMORTS', data: 'mmorts' },
+  { name: 'Survival', data: 'survival' },
+];
+
+export { tagList1, tagsData };

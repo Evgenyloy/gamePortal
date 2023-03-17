@@ -20,29 +20,30 @@ class ExploreMmo extends Component {
   }
 
   componentDidMount() {
-    this.getMoo();
+    this.getMMo();
   }
 
   onError = () => {
     this.setState({ loading: false, error: true });
   };
 
-  onMooLoaded = (arr) => {
+  onMMoLoaded = (arr) => {
     let item = arr.slice(0, 4);
 
     this.setState({ mmoList: item, loading: false });
   };
 
-  getMoo = () => {
+  getMMo = () => {
     this.portalService
-      .getCategory('mmo')
-      .then(this.onMooLoaded)
+      .getCategory('mmorpg')
+      .then(this.onMMoLoaded)
       .catch(this.onError);
   };
 
   renderItems = (arr) => {
-    let tabIndex = 5;
-    const items = arr.map(({ thumbnail, title, id }) => {
+    const items = arr.map((item) => {
+      const { thumbnail, title, id } = item;
+
       return (
         <div className="mmo__item" key={id}>
           <Link
@@ -53,7 +54,10 @@ class ExploreMmo extends Component {
             <div className="mmo__img-cont">
               <img className="mmo__img" src={thumbnail} alt="" />
             </div>
-            <div className="mmo__desc">{title}</div>
+            <div className="mmo__desc-inner">
+              <div className="mmo__desc">{title.toLowerCase()}</div>
+              <span className="mmo__free">free</span>
+            </div>
           </Link>
         </div>
       );

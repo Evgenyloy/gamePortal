@@ -1,19 +1,41 @@
+import { Link } from 'react-router-dom';
 import './popup.scss';
 
 const Popup = (props) => {
   const popupClassName = props.popup ? 'popup open' : 'popup';
+
+  const onClick = (e) => {
+    props.onMainLinkClick(e.target.dataset.link);
+    props.onBurgerClick();
+  };
+
   return (
     <div className={popupClassName}>
       <nav className="popup__nav">
-        <a href="#" className="popup__link">
+        <Link
+          to="/games"
+          className="popup__link"
+          data-link="pc"
+          onClick={onClick}
+        >
           pc games
-        </a>
-        <a href="#" className="popup__link">
+        </Link>
+        <Link
+          to="/games"
+          className="popup__link"
+          data-link="browser"
+          onClick={onClick}
+        >
           browser games
-        </a>
-        <a href="#" className="popup__link">
+        </Link>
+        <Link
+          to="/news"
+          className="popup__link"
+          data-link="pc"
+          onClick={onClick}
+        >
           news
-        </a>
+        </Link>
       </nav>
     </div>
   );

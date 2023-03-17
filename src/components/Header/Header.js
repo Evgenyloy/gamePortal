@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+import { tagsData } from '../../data/data';
 import './header.scss';
 
 const Header = (props) => {
@@ -6,27 +8,69 @@ const Header = (props) => {
     document.body.classList.toggle('noscroll');
   };
 
-  const burgerClassName = props.popupTogler ? 'burger active' : 'burger';
+  const onMainLinkClick = (e) => {
+    props.onMainLinkClick(e.currentTarget.dataset.link);
+  };
 
+  const onTagClick = (e) => {
+    props.onTagClick(e.target.dataset.link);
+  };
+
+  const tagsRender = (tagsData) => {
+    const item = tagsData.map(({ name, data }) => {
+      return (
+        <li className="sub-menu__item" key={name}>
+          <Link
+            to="/games"
+            className="sub-menu__link"
+            data-link={data}
+            onClick={onTagClick}
+          >
+            {name}
+          </Link>
+        </li>
+      );
+    });
+    return item;
+  };
+
+  const burgerClassName = props.popupVisible ? 'burger active' : 'burger';
+
+  const tagList = tagsRender(tagsData);
   return (
     <header className="header">
       <div className="container">
         <div className="header__inner">
-          <a href="" className="header__link">
+          <Link
+            to="/"
+            className="header__link main-link"
+            data-link="all"
+            onClick={onMainLinkClick}
+          >
             <h1 className="header__title">
               MmoGames <span className="header__title-span">Portal</span>
             </h1>
-          </a>
+          </Link>
           <nav className="header__nav">
-            <a href="#" className="header__link">
-              mmo games
-            </a>
-            <a href="#" className="header__link">
+            <Link
+              to="/games"
+              className="header__link"
+              onClick={onMainLinkClick}
+              data-link="pc"
+            >
+              PC games
+            </Link>
+            <Link
+              to="/games"
+              className="header__link"
+              onClick={onMainLinkClick}
+              data-link="browser"
+            >
               browser games
-            </a>
-            <a href="#" className="header__link">
+            </Link>
+            <Link to="/all-news" className="header__link" data-link="news">
               news
-            </a>
+            </Link>
           </nav>
           <div className={burgerClassName} onClick={onButtonClick}>
             <span className="burger__line"></span>
@@ -39,46 +83,7 @@ const Header = (props) => {
         <div className="container">
           <ul className="sub-menu__list">
             <span className="sub-menu__span">popular tags:</span>
-            <li className="sub-menu__item">
-              <a href="#" className="sub-menu__link">
-                Free MMORPG
-              </a>
-            </li>
-            <li className="sub-menu__item">
-              <a href="#" className="sub-menu__link">
-                FPS Games
-              </a>
-            </li>
-            <li className="sub-menu__item">
-              <a href="#" className="sub-menu__link">
-                Anime Games
-              </a>
-            </li>
-            <li className="sub-menu__item">
-              <a href="#" className="sub-menu__link">
-                Battle Royale Games
-              </a>
-            </li>
-            <li className="sub-menu__item">
-              <a href="#" className="sub-menu__link">
-                MMOFPS
-              </a>
-            </li>
-            <li className="sub-menu__item">
-              <a href="#" className="sub-menu__link">
-                Open World
-              </a>
-            </li>
-            <li className="sub-menu__item">
-              <a href="#" className="sub-menu__link">
-                MMORTS
-              </a>
-            </li>
-            <li className="sub-menu__item">
-              <a href="#" className="sub-menu__link">
-                Survival
-              </a>
-            </li>
+            {tagList}
           </ul>
         </div>
       </div>

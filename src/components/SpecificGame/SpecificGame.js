@@ -1,52 +1,39 @@
 import React, { Component } from 'react';
+import { ImCross } from 'react-icons/im';
+
 import PortalService from '../../services/services';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import Spinner from '../Spinner/Spinner';
+
 import '../SpecificGame/specificGame.scss';
 
 class SpecificGame extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      game: localStorage.getItem('game')
-        ? JSON.parse(localStorage.getItem('game'))
-        : {},
       loading: true,
       error: false,
-      description: localStorage.getItem('description')
-        ? JSON.parse(localStorage.getItem('description'))
-        : '',
-      gameId: this.props.game,
+      popUp: false,
+      popUpImgSrc: '',
     };
-
-    this.gameIdd = this.props.game;
-    this.myRef = React.createRef();
 
     this.portalService = new PortalService();
   }
 
   componentDidMount() {
+    document.documentElement.scrollTop = 0;
     this.getGame();
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.props.description !== prevState.description) {
-      this.myRef.current.innerHTML = this.state.description;
-    }
-  }
-  componentWillUnmount() {
-    localStorage.clear('description');
-    localStorage.clear('game');
-  }
+  createMarkup = () => {
+    return { __html: this.props.selectedGame.description };
+  };
 
   onGameLoaded = (game) => {
     this.setState({
-      game,
       loading: false,
-      description: game.description,
     });
-    localStorage.setItem('game', JSON.stringify(game));
-    localStorage.setItem('description', JSON.stringify(game.description));
+    this.props.setGame(game);
   };
 
   onError = () => {
@@ -55,13 +42,20 @@ class SpecificGame extends Component {
 
   getGame = () => {
     this.portalService
-      .getSpecificGame(this.props.game)
+      .getSpecificGame(this.props.gameId)
       .then(this.onGameLoaded)
       .catch(this.onError);
   };
 
-  render() {
-    const { error, game, loading } = this.state;
+  onImageClick = (e) => {
+    console.log(e.target.src);
+
+    this.setState({ popUp: true, popUpImgSrc: e.target.src });
+  };
+  closePopUp = (e) => {
+    this.setState({ popUp: false });
+  };
+  renderItem = () => {
     const {
       developer,
       genre,
@@ -71,15 +65,11 @@ class SpecificGame extends Component {
       thumbnail,
       minimum_system_requirements,
       title,
-    } = this.state.game;
+      screenshots,
+    } = this.props.selectedGame;
 
-    const spinner = loading ? <Spinner /> : null;
-    const errorMessage = error ? <ErrorMessage /> : null;
-
-    let className = loading || error ? 'gamelist__spinner' : 'gamelist__inner';
-
-    return (
-      <div className="game">
+    const content = (
+      <>
         <h3 className="game__title">{title}</h3>
 
         <div className="game__wrapper">
@@ -87,9 +77,45 @@ class SpecificGame extends Component {
             <div className="game__img-cont">
               <img src={thumbnail} alt="" className="game__img" />
             </div>
+            <div className="game__img-cont">
+              <img
+                className="game__screenshots"
+                src={screenshots[0].image}
+                alt=""
+                width="331px"
+                height="186px"
+                onClick={this.onImageClick}
+              />
+            </div>
+            <div className="game__img-cont">
+              {' '}
+              <img
+                className="game__screenshots"
+                src={screenshots[1].image}
+                alt=""
+                width="331px"
+                height="186px"
+                onClick={this.onImageClick}
+              />
+            </div>
+            <div className="game__img-cont">
+              {' '}
+              <img
+                className="game__screenshots"
+                src={screenshots[2].image}
+                alt=""
+                width="331px"
+                height="186px"
+                onClick={this.onImageClick}
+              />
+            </div>
           </div>
           <div className="game__col-2">
-            <div className="game__description" ref={this.myRef}></div>
+            <div
+              className="game__description"
+              ref={this.myRef}
+              dangerouslySetInnerHTML={this.createMarkup()}
+            />
 
             <h4 className="game__information-title">Additional Information</h4>
             <ul className="game__information-list">
@@ -131,6 +157,37 @@ class SpecificGame extends Component {
               </li>
             </ul>
           </div>
+        </div>
+      </>
+    );
+    return content;
+  };
+
+  render() {
+    const { error, loading, popUp } = this.state;
+
+    const item = this.renderItem();
+
+    const spinner = loading ? <Spinner /> : null;
+    const errorMessage = error ? <ErrorMessage /> : null;
+    const content = !(loading || error) ? item : null;
+    let className = loading || error ? 'game__spinner' : 'game';
+    let popUpClassName = popUp ? 'pop-up' : 'pop-up hidden';
+    return (
+      <div className={className}>
+        {spinner}
+        {errorMessage}
+        {content}
+        <div className={popUpClassName} onClick={this.closePopUp}>
+          <span>
+            <ImCross onClick={this.closePopUp} />
+          </span>
+          <img
+            className="pop-up__img"
+            src={this.state.popUpImgSrc}
+            alt=""
+            onClick={(e) => e.stopPropagation()}
+          />
         </div>
       </div>
     );

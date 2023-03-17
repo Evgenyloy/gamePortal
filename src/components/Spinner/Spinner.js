@@ -11,8 +11,8 @@ const Spinner = () => {
           display: 'block',
           shapeRendering: 'auto',
         }}
-        width="211px"
-        height="211px"
+        width="200px"
+        height="200px"
         viewBox="0 0 100 100"
         preserveAspectRatio="xMidYMid"
         className="spinner__svg"

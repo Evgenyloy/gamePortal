@@ -13,22 +13,28 @@
     color: #f4b838;
     font-size: 32px;
     font-weight: 600;
-    margin-right: 40px;
   }
   &__title-span {
     color: #222626;
   }
 
   &__link {
-    font-size: 14px;
+    padding: 1px 2px;
+    font-size: 15px;
     line-height: 22px;
     font-weight: 600;
     text-transform: uppercase;
     color: rgba(0, 0, 0, 0.55);
 
     transition: all 0.1s linear;
+    &:focus-within {
+      color: #2e2e2ef5;
+    }
     &:hover {
       color: #3e3f3a;
+    }
+    &:active &:focus-within {
+      outline: none;
     }
   }
 }
@@ -60,12 +66,21 @@
     font-size: 15px;
 
     transition: all 0.1s linear;
+    &:focus-within {
+      color: #f7f5ec;
+    }
     &:hover {
       color: #f7f5ec;
     }
   }
 }
-
+.main-link {
+  margin-right: 40px;
+  &:focus-within {
+    outline: none;
+    box-shadow: none;
+  }
+}
 .burger {
   height: 100%;
   display: none;
