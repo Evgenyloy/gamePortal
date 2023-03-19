@@ -2,6 +2,9 @@
   display: none;
 }
 @media (max-width: 650px) {
+  body.noscroll {
+    overflow: hidden;
+  }
   .popup {
     display: block;
     position: fixed;
@@ -10,10 +13,11 @@
     width: 100%;
     height: 100%;
     background-color: #303030;
-    z-index: 100;
-    transition: all 0.5s;
+    transition: all 0.2s linear;
     &.open {
       right: 0;
+      animation-name: popup-animation;
+      animation-duration: 0.2s;
     }
     &__nav {
       margin-top: 100px;
@@ -33,5 +37,13 @@
         color: #f7f5ec;
       }
     }
+  }
+}
+@keyframes popup-animation {
+  from {
+    right: -100%;
+  }
+  to {
+    right: 0;
   }
 }

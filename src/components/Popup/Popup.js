@@ -1,44 +1,55 @@
+import { Component } from 'react';
 import { Link } from 'react-router-dom';
+import Portal from '../Portal/Portal';
+
 import './popup.scss';
 
-const Popup = (props) => {
-  const popupClassName = props.popup ? 'popup open' : 'popup';
+class Popup extends Component {
+  constructor(props) {
+    super(props);
+  }
 
-  const onClick = (e) => {
-    props.onMainLinkClick(e.target.dataset.link);
-    props.onBurgerClick();
+  onClick = (e) => {
+    this.props.onMainLinkClick(e.target.dataset.link);
+    this.props.onBurgerClick();
   };
 
-  return (
-    <div className={popupClassName}>
-      <nav className="popup__nav">
-        <Link
-          to="/games"
-          className="popup__link"
-          data-link="pc"
-          onClick={onClick}
-        >
-          pc games
-        </Link>
-        <Link
-          to="/games"
-          className="popup__link"
-          data-link="browser"
-          onClick={onClick}
-        >
-          browser games
-        </Link>
-        <Link
-          to="/news"
-          className="popup__link"
-          data-link="pc"
-          onClick={onClick}
-        >
-          news
-        </Link>
-      </nav>
-    </div>
-  );
-};
+  render() {
+    const popupClassName = this.props.popup ? 'popup open' : 'popup';
+    if (!this.props.delay) return;
+    return (
+      <Portal props={this.props.popup}>
+        <div className={popupClassName} tabIndex={0}>
+          <nav className="popup__nav">
+            <Link
+              to="/games"
+              className="popup__link"
+              data-link="pc"
+              onClick={this.onClick}
+            >
+              pc games
+            </Link>
+            <Link
+              to="/games"
+              className="popup__link"
+              data-link="browser"
+              onClick={this.onClick}
+            >
+              browser games
+            </Link>
+            <Link
+              to="/all-news"
+              className="popup__link"
+              data-link="pc"
+              onClick={this.onClick}
+            >
+              news
+            </Link>
+          </nav>
+        </div>
+      </Portal>
+    );
+  }
+}
 
 export default Popup;

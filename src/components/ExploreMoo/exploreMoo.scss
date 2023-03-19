@@ -101,6 +101,9 @@
     &__top-side {
       margin-bottom: 10px;
     }
+    &__spinner {
+      height: 400px;
+    }
   }
 }
 @media (max-width: 460px) {
@@ -112,6 +115,9 @@
     }
     &__top-side {
       margin-bottom: 10px;
+    }
+    &__spinner {
+      height: 810px;
     }
   }
 }

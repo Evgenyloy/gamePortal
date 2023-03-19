@@ -8,3 +8,21 @@
     width: 200px;
   }
 }
+.spinner-img {
+  width: 100%;
+  display: flex;
+  align-self: center;
+  justify-self: center;
+  width: 215px;
+  height: 145px;
+  svg {
+    align-self: center;
+    width: 215px;
+    height: 145px;
+    background: rgba(0, 0, 0, 0.5);
+  }
+}
+
+.hidden {
+  display: none;
+}

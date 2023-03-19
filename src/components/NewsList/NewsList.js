@@ -120,7 +120,7 @@ class NewsList extends Component {
     const content = !(loading || error) ? items : null;
 
     const className =
-      loading || error ? 'news-list__inner spinner' : 'news-list__inner';
+      loading || error ? 'news-list__spinner ' : 'news-list__inner';
     const btnUpClassName = scroll ? 'btn-up' : 'btn-up btn-up_hide';
     return (
       <div className="news-list">

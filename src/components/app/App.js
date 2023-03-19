@@ -28,6 +28,7 @@ class App extends Component {
       categorySelected: 'mmorpg',
       sortBy: 'relevance',
       popupVisible: false,
+      popupVisibleDelay: false,
     };
   }
 
@@ -60,13 +61,17 @@ class App extends Component {
 
   onBurgerClick = () => {
     this.setState({ popupVisible: !this.state.popupVisible });
+
+    setTimeout(() => {
+      this.setState({ popupVisibleDelay: !this.state.popupVisibleDelay });
+    }, 200);
   };
 
   componentDidMount() {
     window.addEventListener('resize', () => {
       if (window.innerWidth > 650) {
-        this.setState({ popupVisible: false });
         document.body.classList.remove('noscroll');
+        this.setState({ popupVisible: false, popupVisibleDelay: false });
       }
     });
   }
@@ -81,13 +86,6 @@ class App extends Component {
             onMainLinkClick={this.onMainLinkClick}
             onTagClick={this.onTagClick}
           />
-          {window.innerWidth < 700 ? (
-            <Popup
-              popup={this.state.popupVisible}
-              onMainLinkClick={this.onMainLinkClick}
-              onBurgerClick={this.onBurgerClick}
-            />
-          ) : null}
 
           <Switch>
             <Route exact path="/">
@@ -129,6 +127,13 @@ class App extends Component {
             </Route>
           </Switch>
           <Footer />
+
+          <Popup
+            popup={this.state.popupVisible}
+            delay={this.state.popupVisibleDelay}
+            onMainLinkClick={this.onMainLinkClick}
+            onBurgerClick={this.onBurgerClick}
+          />
         </div>
       </Router>
     );

@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { ImCross } from 'react-icons/im';
 
 import PortalService from '../../services/services';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import Spinner from '../Spinner/Spinner';
+import SpecificGameRequirements from './SpecificGameRequirements';
+import SpecificGameInfo from './SpecificGameInfo';
+import SpecificGameScreenshots from './SpecificGameScreenshots';
+import SpecificGamePopup from './SpecificGamePopup';
 
 import '../SpecificGame/specificGame.scss';
 
@@ -21,13 +24,9 @@ class SpecificGame extends Component {
   }
 
   componentDidMount() {
-    document.documentElement.scrollTop = 0;
+    /* document.documentElement.scrollTop = 0; */
     this.getGame();
   }
-
-  createMarkup = () => {
-    return { __html: this.props.selectedGame.description };
-  };
 
   onGameLoaded = (game) => {
     this.setState({
@@ -48,25 +47,19 @@ class SpecificGame extends Component {
   };
 
   onImageClick = (e) => {
-    console.log(e.target.src);
-
     this.setState({ popUp: true, popUpImgSrc: e.target.src });
   };
-  closePopUp = (e) => {
+
+  closePopUp = () => {
     this.setState({ popUp: false });
   };
-  renderItem = () => {
-    const {
-      developer,
-      genre,
-      platform,
-      publisher,
-      release_date,
-      thumbnail,
-      minimum_system_requirements,
-      title,
-      screenshots,
-    } = this.props.selectedGame;
+
+  createMarkup = () => {
+    return { __html: this.props.selectedGame.description };
+  };
+
+  renderItem = (props) => {
+    const { thumbnail, title } = props;
 
     const content = (
       <>
@@ -77,38 +70,10 @@ class SpecificGame extends Component {
             <div className="game__img-cont">
               <img src={thumbnail} alt="" className="game__img" />
             </div>
-            <div className="game__img-cont">
-              <img
-                className="game__screenshots"
-                src={screenshots[0].image}
-                alt=""
-                width="331px"
-                height="186px"
-                onClick={this.onImageClick}
-              />
-            </div>
-            <div className="game__img-cont">
-              {' '}
-              <img
-                className="game__screenshots"
-                src={screenshots[1].image}
-                alt=""
-                width="331px"
-                height="186px"
-                onClick={this.onImageClick}
-              />
-            </div>
-            <div className="game__img-cont">
-              {' '}
-              <img
-                className="game__screenshots"
-                src={screenshots[2].image}
-                alt=""
-                width="331px"
-                height="186px"
-                onClick={this.onImageClick}
-              />
-            </div>
+            <SpecificGameScreenshots
+              selectedGame={this.props.selectedGame}
+              onImageClick={this.onImageClick}
+            />
           </div>
           <div className="game__col-2">
             <div
@@ -116,46 +81,8 @@ class SpecificGame extends Component {
               ref={this.myRef}
               dangerouslySetInnerHTML={this.createMarkup()}
             />
-
-            <h4 className="game__information-title">Additional Information</h4>
-            <ul className="game__information-list">
-              <li className="game__information">
-                <span>platform:</span> {platform}
-              </li>
-              <li className="game__information">
-                <span>genre:</span> {genre}
-              </li>
-              <li className="game__information">
-                <span>developer:</span> {developer}
-              </li>
-              <li className="game__information">
-                <span>publisher:</span> {publisher}
-              </li>
-              <li className="game__information">
-                <span>release_date:</span> {release_date}
-              </li>
-            </ul>
-
-            <h4 className="game__requirements-title">
-              Minimum System Requirements (Windows)
-            </h4>
-            <ul className="game__requirements-list">
-              <li className="game__requirements">
-                <span>os:</span> {minimum_system_requirements?.os}
-              </li>
-              <li className="game__requirements">
-                <span>memory:</span> {minimum_system_requirements?.memory}
-              </li>
-              <li className="game__requirements">
-                <span>grapohics:</span> {minimum_system_requirements?.graphics}
-              </li>
-              <li className="game__requirements">
-                <span>processor:</span> {minimum_system_requirements?.processor}
-              </li>
-              <li className="game__requirements">
-                <span>storage:</span> {minimum_system_requirements?.storage}
-              </li>
-            </ul>
+            <SpecificGameInfo selectedGame={this.props.selectedGame} />
+            <SpecificGameRequirements selectedGame={this.props.selectedGame} />
           </div>
         </div>
       </>
@@ -164,31 +91,26 @@ class SpecificGame extends Component {
   };
 
   render() {
-    const { error, loading, popUp } = this.state;
+    const { error, loading, popUpImgSrc, popUp } = this.state;
 
-    const item = this.renderItem();
+    const item = this.renderItem(this.props.selectedGame);
 
     const spinner = loading ? <Spinner /> : null;
     const errorMessage = error ? <ErrorMessage /> : null;
     const content = !(loading || error) ? item : null;
+
     let className = loading || error ? 'game__spinner' : 'game';
-    let popUpClassName = popUp ? 'pop-up' : 'pop-up hidden';
+
     return (
       <div className={className}>
         {spinner}
         {errorMessage}
         {content}
-        <div className={popUpClassName} onClick={this.closePopUp}>
-          <span>
-            <ImCross onClick={this.closePopUp} />
-          </span>
-          <img
-            className="pop-up__img"
-            src={this.state.popUpImgSrc}
-            alt=""
-            onClick={(e) => e.stopPropagation()}
-          />
-        </div>
+        <SpecificGamePopup
+          popUpImgSrc={popUpImgSrc}
+          popUp={popUp}
+          closePopUp={this.closePopUp}
+        />
       </div>
     );
   }
