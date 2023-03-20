@@ -104,6 +104,18 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    img {
+      display: block;
+      max-width: 400px;
+      height: 400px;
+      object-fit: cover;
+      margin: 0 auto;
+    }
+  }
+  &__filterError {
+    text-align: center;
+    font-size: 24px;
+    color: $title-color;
   }
 }
 

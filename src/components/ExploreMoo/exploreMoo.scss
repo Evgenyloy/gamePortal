@@ -82,6 +82,18 @@
     align-items: center;
     justify-content: center;
     height: 196.63px;
+    .mmo__error-message {
+      text-align: center;
+      font-size: 18px;
+      color: #3e3f3a;
+    }
+    img {
+      display: block;
+      width: 450px;
+      height: 270px;
+      object-fit: cover;
+      margin: 0 auto;
+    }
   }
   &__button {
     &:focus-within {

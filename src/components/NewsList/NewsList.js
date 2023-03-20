@@ -55,7 +55,7 @@ class NewsList extends Component {
 
     if (
       scrollHeight - (scrollTop + innerHeight) < 150 &&
-      this.state.newsList.length < 50
+      this.state.newsList.length < 45
     ) {
       this.setState(() => ({
         itemPerPage: this.state.itemPerPage + 10,
@@ -69,7 +69,7 @@ class NewsList extends Component {
     const filteredNews = news.filter(
       (news) => !news.article_content.includes('&lt')
     );
-    const newsList = filteredNews.slice(4, this.state.itemPerPage);
+    const newsList = filteredNews.slice(0, this.state.itemPerPage);
 
     this.setState({ newsList, loading: false });
   };

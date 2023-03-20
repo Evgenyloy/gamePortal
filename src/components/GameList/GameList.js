@@ -19,6 +19,7 @@ class GameList extends Component {
       error: false,
       itemPerPage: 12,
       currentArr: null,
+      errorFilterNoMatches: false,
     };
 
     this.portalService = new PortalService();
@@ -36,6 +37,7 @@ class GameList extends Component {
       this.props.sortBy !== prevProps.sortBy
     ) {
       this.getAllGames();
+      this.setState({ errorFilterNoMatches: false, error: false });
     }
   }
 
@@ -44,7 +46,12 @@ class GameList extends Component {
   }
 
   onGamesLoaded = (games) => {
+    if (games.status === 0) {
+      this.setState({ errorFilterNoMatches: games.status_message });
+    }
+
     const game = games.slice(0, this.state.itemPerPage);
+
     this.setState({
       gamesList: game,
       loading: false,
@@ -55,6 +62,10 @@ class GameList extends Component {
 
   onError = () => {
     this.setState({ error: true, loading: false, gamesList: [] });
+  };
+
+  errorReset = () => {
+    this.setState({ errorFilterNoMatches: false });
   };
 
   getAllGames = () => {
@@ -99,7 +110,7 @@ class GameList extends Component {
         return (
           <li className="gamelist__item" key={id}>
             <div className="gamelist__img-cont">
-              <img src={thumbnail} alt="" className="gamelist__img" />
+              <img src={thumbnail} alt={title} className="gamelist__img" />
             </div>
 
             <Link
@@ -125,12 +136,15 @@ class GameList extends Component {
   };
 
   render() {
-    const { error, loading, gamesList } = this.state;
+    const { error, loading, gamesList, errorFilterNoMatches } = this.state;
 
     const content = this.renderItems(gamesList);
     const spinner = loading ? <Spinner /> : null;
-    const errorMessage = error ? <ErrorMessage /> : null;
-
+    const errorMessage =
+      error && !errorFilterNoMatches ? <ErrorMessage /> : null;
+    const errorFilter = errorFilterNoMatches ? (
+      <div className="gamelist__filterError">{errorFilterNoMatches}</div>
+    ) : null;
     let className = loading || error ? 'gamelist__spinner' : 'gamelist__inner';
 
     return (
@@ -141,9 +155,11 @@ class GameList extends Component {
             platformSelected={this.props.platformSelected}
             categorySelected={this.props.categorySelected}
             sortBy={this.props.sortBy}
+            errorReset={this.errorReset}
           />
           <ul className={className}>
             {spinner}
+            {errorFilter}
             {errorMessage}
             {content}
           </ul>

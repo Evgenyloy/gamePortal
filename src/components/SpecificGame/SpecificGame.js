@@ -36,7 +36,7 @@ class SpecificGame extends Component {
   };
 
   onError = () => {
-    this.setState({ error: true });
+    this.setState({ error: true, loading: false });
   };
 
   getGame = () => {
@@ -68,7 +68,7 @@ class SpecificGame extends Component {
         <div className="game__wrapper">
           <div className="game__col-1">
             <div className="game__img-cont">
-              <img src={thumbnail} alt="" className="game__img" />
+              <img src={thumbnail} alt={title} className="game__img" />
             </div>
             <SpecificGameScreenshots
               selectedGame={this.props.selectedGame}

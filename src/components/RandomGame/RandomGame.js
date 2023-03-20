@@ -62,7 +62,7 @@ class RandomGame extends Component {
       return (
         <li className="random-game__item" key={id}>
           <div className="random-game__img-cont">
-            <img src={thumbnail} alt="" className="random-game__img" />
+            <img src={thumbnail} alt={title} className="random-game__img" />
           </div>
           <div className="random-game__content">
             <Link
@@ -80,7 +80,7 @@ class RandomGame extends Component {
   };
 
   render() {
-    const { randomGames, error, loading } = this.state;
+    const { randomGames } = this.state;
 
     const content = this.renderItems(randomGames);
     return (

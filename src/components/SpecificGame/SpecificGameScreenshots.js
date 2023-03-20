@@ -38,7 +38,7 @@ class SpecificGameScreenshots extends Component {
           <img
             className={imgClassName1}
             src={screenshots[0].image}
-            alt=""
+            alt="screenshot"
             width="215px"
             height="145px"
             onClick={this.props.onImageClick}
@@ -51,7 +51,7 @@ class SpecificGameScreenshots extends Component {
           <img
             className={imgClassName2}
             src={screenshots[1].image}
-            alt=""
+            alt="screenshot"
             width="215px"
             height="145px"
             onClick={this.props.onImageClick}
@@ -64,7 +64,7 @@ class SpecificGameScreenshots extends Component {
           <img
             className={imgClassName3}
             src={screenshots[2].image}
-            alt=""
+            alt="screenshot"
             width="215px"
             height="145px"
             onClick={this.props.onImageClick}

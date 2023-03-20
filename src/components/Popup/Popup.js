@@ -5,10 +5,6 @@ import Portal from '../Portal/Portal';
 import './popup.scss';
 
 class Popup extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   onClick = (e) => {
     this.props.onMainLinkClick(e.target.dataset.link);
     this.props.onBurgerClick();
@@ -44,6 +40,14 @@ class Popup extends Component {
               onClick={this.onClick}
             >
               news
+            </Link>
+            <Link
+              to="/"
+              className="popup__link"
+              data-link="pc"
+              onClick={this.onClick}
+            >
+              home
             </Link>
           </nav>
         </div>

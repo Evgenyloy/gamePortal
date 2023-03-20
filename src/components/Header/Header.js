@@ -10,6 +10,7 @@ const Header = (props) => {
 
   const onMainLinkClick = (e) => {
     props.onMainLinkClick(e.currentTarget.dataset.link);
+    document.body.classList.remove('noscroll');
   };
 
   const onTagClick = (e) => {

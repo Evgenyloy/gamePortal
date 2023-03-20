@@ -19,7 +19,9 @@ class App extends Component {
         ? JSON.parse(localStorage.getItem('news'))
         : {},
       selectedGame: localStorage.getItem('selectedGame')
-        ? JSON.parse(localStorage.getItem('selectedGame'))
+        ? localStorage.getItem('selectedGame') === 'undefined'
+          ? {}
+          : JSON.parse(localStorage.getItem('selectedGame'))
         : {},
       gameId: localStorage.getItem('gameId')
         ? JSON.parse(localStorage.getItem('gameId'))
@@ -47,6 +49,7 @@ class App extends Component {
 
   onMainLinkClick = (platformSelected) => {
     this.setState({ platformSelected });
+    document.body.classList.remove('noscroll');
   };
 
   onNewsSelected = (selectedNews) => {
@@ -74,6 +77,9 @@ class App extends Component {
         this.setState({ popupVisible: false, popupVisibleDelay: false });
       }
     });
+  }
+  componentWillUnmount() {
+    localStorage.clear();
   }
 
   render() {

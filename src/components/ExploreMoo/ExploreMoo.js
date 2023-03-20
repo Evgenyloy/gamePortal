@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Spinner from '../Spinner/Spinner';
 
 import PortalService from '../../services/services';
-import ErrorMessage from '../ErrorMessage/ErrorMessage';
+
 import '../ExploreMoo/exploreMoo.scss';
 
 class ExploreMmo extends Component {
@@ -52,7 +52,7 @@ class ExploreMmo extends Component {
             onClick={() => this.props.onGameSelected(id)}
           >
             <div className="mmo__img-cont">
-              <img className="mmo__img" src={thumbnail} alt="" />
+              <img className="mmo__img" src={thumbnail} alt={title} />
             </div>
             <div className="mmo__desc-inner">
               <div className="mmo__desc">{title.toLowerCase()}</div>
@@ -72,7 +72,11 @@ class ExploreMmo extends Component {
     const content = this.renderItems(mmoList);
 
     const spinner = loading ? <Spinner /> : null;
-    const errorMessage = error ? <ErrorMessage /> : null;
+    const errorMessage = error ? (
+      <div className="mmo__error-message">
+        Something went wrong. Refresh the page or try again later
+      </div>
+    ) : null;
 
     const className = loading || error ? 'mmo__spinner' : 'mmo__inner';
     return (

@@ -4,6 +4,7 @@ import './filter.scss';
 const Filter = (props) => {
   const onClick = (e) => {
     props.onFilterSelected(e);
+    props.errorReset();
   };
 
   const tagItemRender = () => {
