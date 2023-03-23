@@ -10,6 +10,7 @@ const Header = (props) => {
 
   const onMainLinkClick = (e) => {
     props.onMainLinkClick(e.currentTarget.dataset.link);
+
     document.body.classList.remove('noscroll');
   };
 
@@ -22,7 +23,7 @@ const Header = (props) => {
       return (
         <li className="sub-menu__item" key={name}>
           <Link
-            to="/games"
+            to="/game-list"
             className="sub-menu__link"
             data-link={data}
             onClick={onTagClick}
@@ -54,7 +55,7 @@ const Header = (props) => {
           </Link>
           <nav className="header__nav">
             <Link
-              to="/games"
+              to="/game-list"
               className="header__link"
               onClick={onMainLinkClick}
               data-link="pc"
@@ -62,7 +63,7 @@ const Header = (props) => {
               PC games
             </Link>
             <Link
-              to="/games"
+              to="/game-list"
               className="header__link"
               onClick={onMainLinkClick}
               data-link="browser"

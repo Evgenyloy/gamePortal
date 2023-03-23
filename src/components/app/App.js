@@ -4,12 +4,14 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Header from '../Header/Header';
 import NewsBlock from '../NewsBlock/NewsBlock';
 import ExploreMmo from '../ExploreMoo/ExploreMoo';
-import GameList from '../GameList/GameList';
-import SpecificGame from '../SpecificGame/SpecificGame';
 import NewsList from '../NewsList/NewsList';
-import CertainNews from '../CertainNews/CertainNews';
 import Popup from '../Popup/Popup';
 import Footer from '../Footer/Footer';
+
+import GameList from '../GameList/GameList';
+import SpecificGame from '../SpecificGame/SpecificGame';
+import CertainNews from '../CertainNews/CertainNews';
+import Page404 from '../Page404/Page404';
 
 class App extends Component {
   constructor(props) {
@@ -30,7 +32,6 @@ class App extends Component {
       categorySelected: 'mmorpg',
       sortBy: 'relevance',
       popupVisible: false,
-      popupVisibleDelay: false,
     };
   }
 
@@ -64,22 +65,18 @@ class App extends Component {
 
   onBurgerClick = () => {
     this.setState({ popupVisible: !this.state.popupVisible });
-
-    setTimeout(() => {
-      this.setState({ popupVisibleDelay: !this.state.popupVisibleDelay });
-    }, 200);
   };
 
   componentDidMount() {
     window.addEventListener('resize', () => {
       if (window.innerWidth > 650) {
         document.body.classList.remove('noscroll');
-        this.setState({ popupVisible: false, popupVisibleDelay: false });
+        this.setState({ popupVisible: false });
       }
     });
   }
   componentWillUnmount() {
-    localStorage.clear();
+    /* localStorage.clear(); */
   }
 
   render() {
@@ -104,9 +101,9 @@ class App extends Component {
             </Route>
 
             <Route exact path="/news">
-              <CertainNews news={this.state.selectedNews} />
+              <CertainNews news={this.state.selectedNews} on={this.state.on} />
             </Route>
-            <Route exact path="/game">
+            <Route exact path="/game/:gameId">
               <SpecificGame
                 gameId={this.state.gameId}
                 onGameSelected={this.onGameSelected}
@@ -120,10 +117,10 @@ class App extends Component {
                 onGameSelected={this.onGameSelected}
               />
             </Route>
-            <Route exact path="/games">
+            <Route exact path="/game-list">
               <GameList
                 exact
-                path="/game"
+                path="/game-list"
                 onGameSelected={this.onGameSelected}
                 platformSelected={this.state.platformSelected}
                 categorySelected={this.state.categorySelected}
@@ -131,15 +128,16 @@ class App extends Component {
                 onFilterSelected={this.onFilterSelected}
               />
             </Route>
+            <Route path="*">
+              <Page404 />
+            </Route>
           </Switch>
-          <Footer />
-
           <Popup
             popup={this.state.popupVisible}
-            delay={this.state.popupVisibleDelay}
             onMainLinkClick={this.onMainLinkClick}
             onBurgerClick={this.onBurgerClick}
           />
+          <Footer />
         </div>
       </Router>
     );

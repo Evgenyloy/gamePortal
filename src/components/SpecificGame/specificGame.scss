@@ -32,7 +32,6 @@
     margin-bottom: 15px;
   }
   &__screenshots {
-    transition: all 0.1s linear;
     width: 215px;
     height: 146px;
     cursor: pointer;
@@ -151,10 +150,10 @@
     }
   }
 }
-.hidden {
-  display: none;
+.opacity {
+  opacity: 0;
+  visibility: 0;
 }
-
 @media (max-width: 600px) {
   .game {
     &__wrapper {

@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { Transition } from 'react-transition-group';
 
-import Slider from 'react-slick';
 import NewsService from '../../services/services';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import Spinner from '../Spinner/Spinner';
 
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+import { transitionStyles, defaultStyle, duration } from '../../data/data';
 import './newsBlock.scss';
 
 class NewsBlock extends Component {
@@ -48,26 +47,44 @@ class NewsBlock extends Component {
 
   renderItems = (arr) => {
     let newsItemNum = 1;
-    const items = arr.map((item) => {
-      let className = `news__item news__item${newsItemNum++}`;
 
-      const { title, id, main_image } = item;
-
-      return (
-        <div className={className} key={id}>
-          <Link
-            className="news__link"
-            to="/news"
-            onClick={() => {
-              this.props.onNewsSelected(item);
-            }}
-          >
-            <img className="news__img" src={main_image} alt="thumbnail" />
-          </Link>
-          <div className="news__title">{title}</div>
-        </div>
-      );
-    });
+    const items = (
+      <Transition in timeout={duration} appear mountOnEnter enter>
+        {(state) => (
+          <>
+            {arr.map((item) => {
+              let className = `news__item news__item${newsItemNum++}`;
+              const { title, id, main_image } = item;
+              return (
+                <div
+                  className={className}
+                  key={id}
+                  style={{
+                    ...defaultStyle,
+                    ...transitionStyles[state],
+                  }}
+                >
+                  <Link
+                    className="news__link"
+                    to="/news"
+                    onClick={() => {
+                      this.props.onNewsSelected(item);
+                    }}
+                  >
+                    <img
+                      className="news__img"
+                      src={main_image}
+                      alt="thumbnail"
+                    />
+                  </Link>
+                  <div className="news__title">{title}</div>
+                </div>
+              );
+            })}
+          </>
+        )}
+      </Transition>
+    );
 
     return items;
   };
@@ -80,7 +97,6 @@ class NewsBlock extends Component {
     const errorMessage = error ? <ErrorMessage /> : null;
     const spinner = loading ? <Spinner /> : null;
     const content = !(loading || error) ? items : null;
-
     const className = spinner || error ? 'news__spinner' : 'news__inner';
 
     return (

@@ -1,12 +1,14 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { BsFillArrowUpCircleFill } from 'react-icons/bs';
+import { Transition } from 'react-transition-group';
 
 import PortalService from '../../services/services';
 import Spinner from '../Spinner/Spinner';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import RandomGame from '../RandomGame/RandomGame';
 
+import { transitionStyles, defaultStyle, duration } from '../../data/data';
 import './newsList.scss';
 
 class NewsList extends Component {
@@ -77,9 +79,11 @@ class NewsList extends Component {
   onError = () => {
     this.setState({ error: true, loading: false });
   };
+
   onNewsClick = (item) => {
     this.props.onNewsSelected(item);
   };
+
   onBtnUpClick = () => {
     window.scrollTo({
       top: 0,
@@ -87,27 +91,42 @@ class NewsList extends Component {
       behavior: 'smooth',
     });
   };
+
   renderItems = (arr) => {
-    const item = arr.map((item) => {
-      const { short_description, title, thumbnail, id } = item;
-      return (
-        <li className="news-list__item" key={id}>
-          <div className="news-list__img-cont">
-            <img src={thumbnail} alt={title} className="news-list__img" />
-          </div>
-          <div className="news-list__content-cont">
-            <h3 className="news-list__title">{title}</h3>
-            <Link
-              className="news-list__desc"
-              to="/news"
-              onClick={() => this.onNewsClick(item)}
-            >
-              {short_description}
-            </Link>
-          </div>
-        </li>
-      );
-    });
+    const item = (
+      <Transition in={true} timeout={duration} appear mountOnEnter>
+        {(state) =>
+          arr.map((item) => {
+            const { short_description, title, thumbnail, id } = item;
+            return (
+              <li
+                className="news-list__item"
+                key={id}
+                style={{
+                  ...defaultStyle,
+                  ...transitionStyles[state],
+                }}
+              >
+                <div className="news-list__img-cont">
+                  <img src={thumbnail} alt={title} className="news-list__img" />
+                </div>
+                <div className="news-list__content-cont">
+                  <h3 className="news-list__title">{title}</h3>
+                  <Link
+                    className="news-list__desc"
+                    to="/news"
+                    onClick={() => this.onNewsClick(item)}
+                  >
+                    {short_description}
+                  </Link>
+                </div>
+              </li>
+            );
+          })
+        }
+      </Transition>
+    );
+
     return item;
   };
 

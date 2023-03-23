@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Transition } from 'react-transition-group';
 
 import PortalService from '../../services/services';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
@@ -8,6 +9,7 @@ import SpecificGameInfo from './SpecificGameInfo';
 import SpecificGameScreenshots from './SpecificGameScreenshots';
 import SpecificGamePopup from './SpecificGamePopup';
 
+import { transitionStyles, defaultStyle, duration } from '../../data/data';
 import '../SpecificGame/specificGame.scss';
 
 class SpecificGame extends Component {
@@ -24,8 +26,11 @@ class SpecificGame extends Component {
   }
 
   componentDidMount() {
-    /* document.documentElement.scrollTop = 0; */
+    document.documentElement.scrollTop = 0;
     this.getGame();
+    if (!this.props.selectedGame || !this.props.gameId) {
+      this.setState({ error: true });
+    }
   }
 
   onGameLoaded = (game) => {
@@ -62,30 +67,41 @@ class SpecificGame extends Component {
     const { thumbnail, title } = props;
 
     const content = (
-      <>
-        <h3 className="game__title">{title}</h3>
+      <Transition in timeout={duration} mountOnEnter appear>
+        {(state) => (
+          <div
+            style={{
+              ...defaultStyle,
+              ...transitionStyles[state],
+            }}
+          >
+            <h3 className="game__title">{title}</h3>
 
-        <div className="game__wrapper">
-          <div className="game__col-1">
-            <div className="game__img-cont">
-              <img src={thumbnail} alt={title} className="game__img" />
+            <div className="game__wrapper">
+              <div className="game__col-1">
+                <div className="game__img-cont">
+                  <img src={thumbnail} alt={title} className="game__img" />
+                </div>
+                <SpecificGameScreenshots
+                  selectedGame={this.props.selectedGame}
+                  onImageClick={this.onImageClick}
+                />
+              </div>
+              <div className="game__col-2">
+                <div
+                  className="game__description"
+                  ref={this.myRef}
+                  dangerouslySetInnerHTML={this.createMarkup()}
+                />
+                <SpecificGameInfo selectedGame={this.props.selectedGame} />
+                <SpecificGameRequirements
+                  selectedGame={this.props.selectedGame}
+                />
+              </div>
             </div>
-            <SpecificGameScreenshots
-              selectedGame={this.props.selectedGame}
-              onImageClick={this.onImageClick}
-            />
           </div>
-          <div className="game__col-2">
-            <div
-              className="game__description"
-              ref={this.myRef}
-              dangerouslySetInnerHTML={this.createMarkup()}
-            />
-            <SpecificGameInfo selectedGame={this.props.selectedGame} />
-            <SpecificGameRequirements selectedGame={this.props.selectedGame} />
-          </div>
-        </div>
-      </>
+        )}
+      </Transition>
     );
     return content;
   };

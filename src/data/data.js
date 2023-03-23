@@ -57,4 +57,18 @@ const tagsData = [
   { name: 'Survival', data: 'survival' },
 ];
 
-export { tagList1, tagsData };
+const duration = 200;
+
+const defaultStyle = {
+  transition: `opacity ${duration}ms ease-in-out`,
+  opacity: 0,
+};
+
+const transitionStyles = {
+  entering: { opacity: 1 },
+  entered: { opacity: 1 },
+  exiting: { opacity: 0 },
+  exited: { opacity: 0 },
+};
+
+export { tagList1, tagsData, duration, defaultStyle, transitionStyles };

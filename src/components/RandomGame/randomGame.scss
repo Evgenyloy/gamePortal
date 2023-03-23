@@ -64,6 +64,13 @@
     z-index: 1;
     content: '';
   }
+  &__list .spinner {
+    padding-top: 200px;
+    svg {
+      width: 150px;
+      height: 150px;
+    }
+  }
 }
 
 @media (max-width: 1100px) {

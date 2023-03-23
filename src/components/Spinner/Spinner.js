@@ -1,6 +1,6 @@
 import './spinner.scss';
 
-const Spinner = () => {
+const Spinner = (props) => {
   return (
     <div className="spinner">
       <svg

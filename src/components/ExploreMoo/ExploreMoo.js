@@ -1,10 +1,10 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
-
+import { Transition } from 'react-transition-group';
 import Spinner from '../Spinner/Spinner';
-
 import PortalService from '../../services/services';
 
+import { transitionStyles, defaultStyle, duration } from '../../data/data';
 import '../ExploreMoo/exploreMoo.scss';
 
 class ExploreMmo extends Component {
@@ -41,27 +41,40 @@ class ExploreMmo extends Component {
   };
 
   renderItems = (arr) => {
-    const items = arr.map((item) => {
-      const { thumbnail, title, id } = item;
+    const items = (
+      <Transition in={true} timeout={duration} appear mountOnEnter>
+        {(state) =>
+          arr.map((item) => {
+            const { thumbnail, title, id } = item;
 
-      return (
-        <div className="mmo__item" key={id}>
-          <Link
-            className="mmo__link"
-            to="/game"
-            onClick={() => this.props.onGameSelected(id)}
-          >
-            <div className="mmo__img-cont">
-              <img className="mmo__img" src={thumbnail} alt={title} />
-            </div>
-            <div className="mmo__desc-inner">
-              <div className="mmo__desc">{title.toLowerCase()}</div>
-              <span className="mmo__free">free</span>
-            </div>
-          </Link>
-        </div>
-      );
-    });
+            return (
+              <div
+                className="mmo__item"
+                key={id}
+                style={{
+                  ...defaultStyle,
+                  ...transitionStyles[state],
+                }}
+              >
+                <Link
+                  className="mmo__link"
+                  to={`/game/${id}`}
+                  onClick={() => this.props.onGameSelected(id)}
+                >
+                  <div className="mmo__img-cont">
+                    <img className="mmo__img" src={thumbnail} alt={title} />
+                  </div>
+                  <div className="mmo__desc-inner">
+                    <div className="mmo__desc">{title.toLowerCase()}</div>
+                    <span className="mmo__free">free</span>
+                  </div>
+                </Link>
+              </div>
+            );
+          })
+        }
+      </Transition>
+    );
 
     return items;
   };
@@ -85,7 +98,7 @@ class ExploreMmo extends Component {
           <div className="mmo__top-side">
             <div className="mmo__title">Explore mmo games</div>
             <div className="mmo__button button">
-              <Link to="/games">browse all </Link>
+              <Link to="/game-list">browse all </Link>
             </div>
           </div>
 

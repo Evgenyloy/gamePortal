@@ -1,6 +1,12 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { Transition } from 'react-transition-group';
+
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
+import Spinner from '../Spinner/Spinner';
 import PortalService from '../../services/services';
+import { transitionStyles, defaultStyle, duration } from '../../data/data';
+
 import './randomGame.scss';
 
 class RandomGame extends Component {
@@ -56,37 +62,62 @@ class RandomGame extends Component {
   };
 
   renderItems = (arr) => {
-    const item = arr.map(({ title, id, thumbnail, short_description }) => {
-      const desc = short_description.slice(0, 70) + '...';
+    const item = (
+      <Transition in={true} timeout={duration} appear mountOnEnter>
+        {(state) =>
+          arr.map(({ title, id, thumbnail, short_description }) => {
+            const desc = short_description.slice(0, 70) + '...';
+            return (
+              <li
+                className="random-game__item"
+                key={id}
+                style={{
+                  ...defaultStyle,
+                  ...transitionStyles[state],
+                }}
+              >
+                <div className="random-game__img-cont">
+                  <img
+                    src={thumbnail}
+                    alt={title}
+                    className="random-game__img"
+                  />
+                </div>
+                <div className="random-game__content">
+                  <Link
+                    to={`/game/${id}`}
+                    className="random-game__link"
+                    onClick={() => this.props.onGameSelected(id)}
+                  >
+                    <p className="random-game__text line-clamp">{desc}</p>
+                  </Link>
+                </div>
+              </li>
+            );
+          })
+        }
+      </Transition>
+    );
 
-      return (
-        <li className="random-game__item" key={id}>
-          <div className="random-game__img-cont">
-            <img src={thumbnail} alt={title} className="random-game__img" />
-          </div>
-          <div className="random-game__content">
-            <Link
-              to="/game"
-              className="random-game__link"
-              onClick={() => this.props.onGameSelected(id)}
-            >
-              <p className="random-game__text line-clamp">{desc}</p>
-            </Link>
-          </div>
-        </li>
-      );
-    });
     return item;
   };
 
   render() {
-    const { randomGames } = this.state;
+    const { randomGames, loading, error } = this.state;
+    const items = this.renderItems(randomGames);
 
-    const content = this.renderItems(randomGames);
+    const errorMessage = error ? <ErrorMessage /> : null;
+    const spinner = loading ? <Spinner /> : null;
+    const content = !(loading || error) ? items : null;
+
     return (
       <div className="random-game">
         <p className="random-game__headline">games for you</p>
-        <ul className="random-game__list">{content}</ul>
+        <ul className="random-game__list">
+          {spinner}
+          {errorMessage}
+          {content}
+        </ul>
       </div>
     );
   }

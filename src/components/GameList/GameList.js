@@ -2,12 +2,14 @@ import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { DiWindows } from 'react-icons/di';
 import { TbBrowser } from 'react-icons/tb';
+import { Transition } from 'react-transition-group';
 
 import PortalService from '../../services/services';
 import Filter from '../Filter/Filter';
 import Spinner from '../Spinner/Spinner';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 
+import { transitionStyles, defaultStyle, duration } from '../../data/data';
 import '../GameList/gameList.scss';
 
 class GameList extends Component {
@@ -37,7 +39,10 @@ class GameList extends Component {
       this.props.sortBy !== prevProps.sortBy
     ) {
       this.getAllGames();
-      this.setState({ errorFilterNoMatches: false, error: false });
+      this.setState({
+        errorFilterNoMatches: false,
+        error: false,
+      });
     }
   }
 
@@ -97,39 +102,56 @@ class GameList extends Component {
   };
 
   renderItems = (arr) => {
-    const item = arr.map(
-      ({ id, title, thumbnail, genre, short_description, platform }) => {
-        const gif =
-          platform === 'PC (Windows), Web Browser' ||
-          platform === 'Web Browser' ? (
-            <TbBrowser />
-          ) : (
-            <DiWindows />
-          );
+    const item = (
+      <Transition in={true} timeout={duration} appear mountOnEnter>
+        {(state) =>
+          arr.map(
+            ({ id, title, thumbnail, genre, short_description, platform }) => {
+              const gif =
+                platform === 'PC (Windows), Web Browser' ||
+                platform === 'Web Browser' ? (
+                  <TbBrowser />
+                ) : (
+                  <DiWindows />
+                );
 
-        return (
-          <li className="gamelist__item" key={id}>
-            <div className="gamelist__img-cont">
-              <img src={thumbnail} alt={title} className="gamelist__img" />
-            </div>
+              return (
+                <li
+                  className="gamelist__item"
+                  key={id}
+                  style={{
+                    ...defaultStyle,
+                    ...transitionStyles[state],
+                  }}
+                >
+                  <div className="gamelist__img-cont">
+                    <img
+                      src={thumbnail}
+                      alt={title}
+                      className="gamelist__img"
+                    />
+                  </div>
 
-            <Link
-              className="gamelist__link"
-              to="/game"
-              onClick={() => this.props.onGameSelected(id)}
-            >
-              <h3 className="gamelist__title">{title}</h3>
-            </Link>
+                  <Link
+                    className="gamelist__link"
+                    to={`/game/${id}`}
+                    onClick={() => this.props.onGameSelected(id)}
+                  >
+                    <h3 className="gamelist__title">{title}</h3>
+                  </Link>
 
-            <p className="gamelist__desc">{short_description}</p>
+                  <p className="gamelist__desc">{short_description}</p>
 
-            <div className="gamelist__genre">
-              {genre}
-              {gif}
-            </div>
-          </li>
-        );
-      }
+                  <div className="gamelist__genre">
+                    {genre}
+                    {gif}
+                  </div>
+                </li>
+              );
+            }
+          )
+        }
+      </Transition>
     );
 
     return item;
@@ -138,13 +160,14 @@ class GameList extends Component {
   render() {
     const { error, loading, gamesList, errorFilterNoMatches } = this.state;
 
-    const content = this.renderItems(gamesList);
     const spinner = loading ? <Spinner /> : null;
     const errorMessage =
       error && !errorFilterNoMatches ? <ErrorMessage /> : null;
     const errorFilter = errorFilterNoMatches ? (
       <div className="gamelist__filterError">{errorFilterNoMatches}</div>
     ) : null;
+
+    const content = !(loading || error) ? this.renderItems(gamesList) : null;
     let className = loading || error ? 'gamelist__spinner' : 'gamelist__inner';
 
     return (

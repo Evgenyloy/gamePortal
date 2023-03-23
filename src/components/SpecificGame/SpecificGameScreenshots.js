@@ -1,7 +1,7 @@
-import '../SpecificGame/specificGame.scss';
-
 import React, { Component } from 'react';
 import SpinnerImg from '../Spinner/SpinnerImg';
+
+import '../SpecificGame/specificGame.scss';
 
 class SpecificGameScreenshots extends Component {
   constructor(props) {
@@ -39,12 +39,11 @@ class SpecificGameScreenshots extends Component {
             className={imgClassName1}
             src={screenshots[0].image}
             alt="screenshot"
-            width="215px"
-            height="145px"
             onClick={this.props.onImageClick}
             onLoad={this.onload}
             id="image1"
           />
+
           <SpinnerImg image={this.state.image1} />
         </div>
         <div className="game__img-cont">
@@ -52,8 +51,6 @@ class SpecificGameScreenshots extends Component {
             className={imgClassName2}
             src={screenshots[1].image}
             alt="screenshot"
-            width="215px"
-            height="145px"
             onClick={this.props.onImageClick}
             onLoad={this.onload}
             id="image2"
@@ -65,8 +62,6 @@ class SpecificGameScreenshots extends Component {
             className={imgClassName3}
             src={screenshots[2].image}
             alt="screenshot"
-            width="215px"
-            height="145px"
             onClick={this.props.onImageClick}
             onLoad={this.onload}
             id="image3"
