@@ -1,51 +1,37 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
 
-import NewsService from '../../services/services';
+import usePortalService from '../../services/services';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import Spinner from '../Spinner/Spinner';
 
 import { transitionStyles, defaultStyle, duration } from '../../data/data';
 import './newsBlock.scss';
 
-class NewsBlock extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      newsList: [],
-      loading: true,
-      error: false,
-    };
+const NewsBlock = (props) => {
+  const { loading, error, getNews } = usePortalService();
 
-    this.newsService = new NewsService();
-  }
+  const [newsList, setNewsList] = useState([]);
 
-  componentDidMount() {
-    this.newsList();
-  }
+  useEffect(() => {
+    setNewsList([]);
+    getPortalNews();
+  }, []);
 
-  onNewsLoaded = (news) => {
+  const onNewsLoaded = (news) => {
     const filteredNews = news.filter(
       (news) => !news.article_content.includes('&lt')
     );
-    let newsArr = filteredNews.slice(0, 4);
-
-    this.setState({ newsList: newsArr, loading: false });
+    const newsArr = filteredNews.slice(0, 4);
+    setNewsList(newsArr);
   };
 
-  onError = () => {
-    this.setState({
-      error: true,
-      loading: false,
-    });
+  const getPortalNews = () => {
+    getNews().then(onNewsLoaded);
   };
 
-  newsList = () => {
-    this.newsService.getNews().then(this.onNewsLoaded).catch(this.onError);
-  };
-
-  renderItems = (arr) => {
+  const renderItems = (arr) => {
     let newsItemNum = 1;
 
     const items = (
@@ -68,7 +54,7 @@ class NewsBlock extends Component {
                     className="news__link"
                     to="/news"
                     onClick={() => {
-                      this.props.onNewsSelected(item);
+                      props.onNewsSelected(item);
                     }}
                   >
                     <img
@@ -89,34 +75,28 @@ class NewsBlock extends Component {
     return items;
   };
 
-  render() {
-    const { newsList, loading, error } = this.state;
+  const content = renderItems(newsList);
+  const errorMessage = error ? <ErrorMessage /> : null;
+  const spinner = loading ? <Spinner /> : null;
+  const className = spinner || error ? 'news__spinner' : 'news__inner';
 
-    const items = this.renderItems(newsList);
-
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading ? <Spinner /> : null;
-    const content = !(loading || error) ? items : null;
-    const className = spinner || error ? 'news__spinner' : 'news__inner';
-
-    return (
-      <div className="news">
-        <div className="container">
-          <div className="news__top">
-            <div className="news__info">Last news</div>
-            <div className="news__button button">
-              <Link to="/all-news">browse all</Link>
-            </div>
-          </div>
-          <div className={className}>
-            {errorMessage}
-            {spinner}
-            {content}
+  return (
+    <div className="news">
+      <div className="container">
+        <div className="news__top">
+          <div className="news__info">Last news</div>
+          <div className="news__button button">
+            <Link to="/news-list">browse all</Link>
           </div>
         </div>
+        <div className={className}>
+          {errorMessage}
+          {spinner}
+          {content}
+        </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default NewsBlock;

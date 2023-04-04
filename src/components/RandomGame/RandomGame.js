@@ -1,30 +1,24 @@
-import { Component } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
 
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import Spinner from '../Spinner/Spinner';
-import PortalService from '../../services/services';
+import usePortalService from '../../services/services';
 import { transitionStyles, defaultStyle, duration } from '../../data/data';
 
 import './randomGame.scss';
 
-class RandomGame extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      randomGames: [],
-      error: false,
-      loading: true,
-    };
-    this.portaServis = new PortalService();
-  }
+const RandomGame = (props) => {
+  const { loading, error, getCategory } = usePortalService();
 
-  componentDidMount() {
-    this.getRandomGame();
-  }
+  const [randomGames, setRandomGames] = useState([]);
 
-  getRandomGame = () => {
+  useEffect(() => {
+    getRandomGame();
+  }, []);
+
+  const getRandomGame = () => {
     const randomCategory = Math.floor(Math.random() * 4) + 1;
     let randomGenre;
     switch (randomCategory) {
@@ -45,23 +39,15 @@ class RandomGame extends Component {
         randomGenre = 'mmo';
     }
 
-    this.portaServis
-      .getCategory(randomGenre)
-      .then(this.onRandomGameLoad)
-      .catch(this.onError);
+    getCategory(randomGenre).then(onRandomGameLoad);
   };
 
-  onError = () => {
-    this.setState({ loading: false, error: true });
-  };
-
-  onRandomGameLoad = (arr) => {
+  const onRandomGameLoad = (arr) => {
     let item = arr.slice(0, 8);
-
-    this.setState({ randomGames: item, loading: false });
+    setRandomGames(item);
   };
 
-  renderItems = (arr) => {
+  const renderItems = (arr) => {
     const item = (
       <Transition in={true} timeout={duration} appear mountOnEnter>
         {(state) =>
@@ -85,9 +71,9 @@ class RandomGame extends Component {
                 </div>
                 <div className="random-game__content">
                   <Link
-                    to={`/game/${id}`}
+                    to={`/game-${id}`}
                     className="random-game__link"
-                    onClick={() => this.props.onGameSelected(id)}
+                    onClick={() => props.onGameSelected(id)}
                   >
                     <p className="random-game__text line-clamp">{desc}</p>
                   </Link>
@@ -102,25 +88,22 @@ class RandomGame extends Component {
     return item;
   };
 
-  render() {
-    const { randomGames, loading, error } = this.state;
-    const items = this.renderItems(randomGames);
+  const items = renderItems(randomGames);
 
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading ? <Spinner /> : null;
-    const content = !(loading || error) ? items : null;
+  const errorMessage = error ? <ErrorMessage /> : null;
+  const spinner = loading ? <Spinner /> : null;
+  const content = !(loading || error) ? items : null;
 
-    return (
-      <div className="random-game">
-        <p className="random-game__headline">games for you</p>
-        <ul className="random-game__list">
-          {spinner}
-          {errorMessage}
-          {content}
-        </ul>
-      </div>
-    );
-  }
-}
+  return (
+    <div className="random-game">
+      <p className="random-game__headline">games for you</p>
+      <ul className="random-game__list">
+        {spinner}
+        {errorMessage}
+        {content}
+      </ul>
+    </div>
+  );
+};
 
 export default RandomGame;

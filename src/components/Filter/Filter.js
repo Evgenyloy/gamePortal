@@ -2,18 +2,27 @@ import { tagList1 } from '../../data/data';
 import './filter.scss';
 
 const Filter = (props) => {
-  const onClick = (e) => {
-    props.onFilterSelected(e);
+  const onPlatformSelected = (e) => {
+    props.setPlatformSelected(e.target.dataset.value);
     props.errorReset();
   };
 
+  const onTagSelected = (e) => {
+    props.setCategorySelected(e.target.dataset.value);
+    props.errorReset();
+  };
+
+  const onSortBy = (e) => {
+    props.setSortBy(e.target.dataset.value);
+    props.errorReset();
+  };
   const tagItemRender = () => {
     const tagList = tagList1.map((item) => {
       return (
         <li
           className="dropdown__list-item"
           data-value={item}
-          onClick={onClick}
+          onClick={onTagSelected}
           id="categorySelected"
           key={item}
         >
@@ -51,7 +60,7 @@ const Filter = (props) => {
           <li
             className="dropdown__list-item"
             data-value="all"
-            onClick={onClick}
+            onClick={onPlatformSelected}
             id="platformSelected"
           >
             All Platforms
@@ -59,7 +68,7 @@ const Filter = (props) => {
           <li
             className="dropdown__list-item"
             data-value="pc"
-            onClick={onClick}
+            onClick={onPlatformSelected}
             id="platformSelected"
           >
             PC (Windows)
@@ -67,7 +76,7 @@ const Filter = (props) => {
           <li
             className="dropdown__list-item"
             data-value="browser"
-            onClick={onClick}
+            onClick={onPlatformSelected}
             id="platformSelected"
           >
             web browser
@@ -80,13 +89,13 @@ const Filter = (props) => {
         <ul className="dropdown__list dropdown__list-tag">{tagList}</ul>
       </div>
       <div className="dropdown">
-        <span>Genre/Tag:</span>
+        <span>sortBy:</span>
         <div className="dropdown__button">{props.sortBy}</div>
         <ul className="dropdown__list ">
           <li
             className="dropdown__list-item"
             data-value="relevance"
-            onClick={onClick}
+            onClick={onSortBy}
             id="sortBy"
           >
             relevance
@@ -94,7 +103,7 @@ const Filter = (props) => {
           <li
             className="dropdown__list-item"
             data-value="popularity"
-            onClick={onClick}
+            onClick={onSortBy}
             id="sortBy"
           >
             popularity
@@ -102,7 +111,7 @@ const Filter = (props) => {
           <li
             className="dropdown__list-item"
             data-value="release-date"
-            onClick={onClick}
+            onClick={onSortBy}
             id="sortBy"
           >
             release date
@@ -110,7 +119,7 @@ const Filter = (props) => {
           <li
             className="dropdown__list-item"
             data-value="alphabetical"
-            onClick={onClick}
+            onClick={onSortBy}
             id="sortBy"
           >
             alphabetical

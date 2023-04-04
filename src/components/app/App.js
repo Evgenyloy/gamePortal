@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 import Header from '../Header/Header';
@@ -13,135 +13,126 @@ import SpecificGame from '../SpecificGame/SpecificGame';
 import CertainNews from '../CertainNews/CertainNews';
 import Page404 from '../Page404/Page404';
 
-class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedNews: localStorage.getItem('news')
-        ? JSON.parse(localStorage.getItem('news'))
-        : {},
-      selectedGame: localStorage.getItem('selectedGame')
-        ? localStorage.getItem('selectedGame') === 'undefined'
-          ? {}
-          : JSON.parse(localStorage.getItem('selectedGame'))
-        : {},
-      gameId: localStorage.getItem('gameId')
-        ? JSON.parse(localStorage.getItem('gameId'))
-        : {},
-      platformSelected: 'all',
-      categorySelected: 'mmorpg',
-      sortBy: 'relevance',
-      popupVisible: false,
-    };
-  }
+const App = () => {
+  const [selectedNews, setSelectedNews] = useState(
+    localStorage.getItem('news') ? JSON.parse(localStorage.getItem('news')) : {}
+  );
+  const [selectedGame, setSelectedGame] = useState(
+    localStorage.getItem('selectedGame')
+      ? localStorage.getItem('selectedGame') === 'undefined'
+        ? {}
+        : JSON.parse(localStorage.getItem('selectedGame'))
+      : {}
+  );
+  const [gameId, setGameId] = useState(
+    localStorage.getItem('gameId')
+      ? JSON.parse(localStorage.getItem('gameId'))
+      : {}
+  );
 
-  setGame = (selectedGame) => {
-    this.setState({ selectedGame });
+  const [platformSelected, setPlatformSelected] = useState('all');
+  const [categorySelected, setCategorySelected] = useState('mmorpg');
+  const [sortBy, setSortBy] = useState('relevance');
+  const [popupVisible, setPopupVisible] = useState(false);
+
+  const setGame = (selectedGame) => {
+    setSelectedGame(selectedGame);
     localStorage.setItem('selectedGame', JSON.stringify(selectedGame));
   };
 
-  onFilterSelected = (e) => {
-    this.setState({ [e.target.id]: e.target.dataset.value });
+  const onTagClick = (categorySelected) => {
+    setCategorySelected(categorySelected);
   };
 
-  onTagClick = (categorySelected) => {
-    this.setState({ categorySelected });
-  };
-
-  onMainLinkClick = (platformSelected) => {
-    this.setState({ platformSelected });
+  const onMainLinkClick = (platformSelected) => {
+    setPlatformSelected(platformSelected);
     document.body.classList.remove('noscroll');
   };
 
-  onNewsSelected = (selectedNews) => {
-    this.setState({ selectedNews });
+  const onNewsSelected = (selectedNews) => {
+    setSelectedNews(selectedNews);
     localStorage.setItem('news', JSON.stringify(selectedNews));
   };
 
-  onGameSelected = (gameId) => {
-    this.setState({ gameId });
+  const onGameSelected = (gameId) => {
+    setGameId(gameId);
     localStorage.setItem('gameId', JSON.stringify(gameId));
   };
 
-  onBurgerClick = () => {
-    this.setState({ popupVisible: !this.state.popupVisible });
+  const onBurgerClick = () => {
+    setPopupVisible(!popupVisible);
   };
 
-  componentDidMount() {
+  useEffect(() => {
     window.addEventListener('resize', () => {
       if (window.innerWidth > 650) {
         document.body.classList.remove('noscroll');
-        this.setState({ popupVisible: false });
+        setPopupVisible(false);
       }
     });
-  }
-  componentWillUnmount() {
-    /* localStorage.clear(); */
-  }
+  }, []);
 
-  render() {
-    return (
-      <Router>
-        <div className="App">
-          <Header
-            onBurgerClick={this.onBurgerClick}
-            popupVisible={this.state.popupVisible}
-            onMainLinkClick={this.onMainLinkClick}
-            onTagClick={this.onTagClick}
-          />
+  return (
+    <Router>
+      <div className="App">
+        <Header
+          onBurgerClick={onBurgerClick}
+          popupVisible={popupVisible}
+          onMainLinkClick={onMainLinkClick}
+          onTagClick={onTagClick}
+        />
 
-          <Switch>
-            <Route exact path="/">
-              <NewsBlock onNewsSelected={this.onNewsSelected} />
-              <ExploreMmo onGameSelected={this.onGameSelected} />
-              <NewsList
-                onNewsSelected={this.onNewsSelected}
-                onGameSelected={this.onGameSelected}
-              />
-            </Route>
+        <Switch>
+          <Route exact path="/">
+            <NewsBlock onNewsSelected={onNewsSelected} />
+            <ExploreMmo onGameSelected={onGameSelected} />
+            <NewsList
+              onNewsSelected={onNewsSelected}
+              onGameSelected={onGameSelected}
+            />
+          </Route>
 
-            <Route exact path="/news">
-              <CertainNews news={this.state.selectedNews} on={this.state.on} />
-            </Route>
-            <Route exact path="/game/:gameId">
-              <SpecificGame
-                gameId={this.state.gameId}
-                onGameSelected={this.onGameSelected}
-                setGame={this.setGame}
-                selectedGame={this.state.selectedGame}
-              />
-            </Route>
-            <Route exact path="/all-news">
-              <NewsList
-                onNewsSelected={this.onNewsSelected}
-                onGameSelected={this.onGameSelected}
-              />
-            </Route>
-            <Route exact path="/game-list">
-              <GameList
-                exact
-                path="/game-list"
-                onGameSelected={this.onGameSelected}
-                platformSelected={this.state.platformSelected}
-                categorySelected={this.state.categorySelected}
-                sortBy={this.state.sortBy}
-                onFilterSelected={this.onFilterSelected}
-              />
-            </Route>
-            <Route path="*">
-              <Page404 />
-            </Route>
-          </Switch>
-          <Popup
-            popup={this.state.popupVisible}
-            onMainLinkClick={this.onMainLinkClick}
-            onBurgerClick={this.onBurgerClick}
-          />
-          <Footer />
-        </div>
-      </Router>
-    );
-  }
-}
+          <Route exact path="/news">
+            <CertainNews news={selectedNews} />
+          </Route>
+          <Route exact path="/game-:gameId">
+            <SpecificGame
+              gameId={gameId}
+              onGameSelected={onGameSelected}
+              setGame={setGame}
+              selectedGame={selectedGame}
+            />
+          </Route>
+          <Route exact path="/news-list">
+            <NewsList
+              onNewsSelected={onNewsSelected}
+              onGameSelected={onGameSelected}
+            />
+          </Route>
+          <Route exact path="/game_list">
+            <GameList
+              onGameSelected={onGameSelected}
+              platformSelected={platformSelected}
+              categorySelected={categorySelected}
+              sortBy={sortBy}
+              setPlatformSelected={setPlatformSelected}
+              setCategorySelected={setCategorySelected}
+              setSortBy={setSortBy}
+            />
+          </Route>
+          <Route path="*">
+            <Page404 />
+          </Route>
+        </Switch>
+        <Popup
+          popup={popupVisible}
+          onMainLinkClick={onMainLinkClick}
+          onBurgerClick={onBurgerClick}
+        />
+        <Footer />
+      </div>
+    </Router>
+  );
+};
 
 export default App;

@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Transition } from 'react-transition-group';
 
-import PortalService from '../../services/services';
+import usePortalService from '../../services/services';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import Spinner from '../Spinner/Spinner';
 import SpecificGameRequirements from './SpecificGameRequirements';
@@ -12,58 +12,39 @@ import SpecificGamePopup from './SpecificGamePopup';
 import { transitionStyles, defaultStyle, duration } from '../../data/data';
 import '../SpecificGame/specificGame.scss';
 
-class SpecificGame extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: true,
-      error: false,
-      popUp: false,
-      popUpImgSrc: '',
-    };
+const SpecificGame = (props) => {
+  const { error, loading, getSpecificGame } = usePortalService();
 
-    this.portalService = new PortalService();
-  }
+  const [popUp, setPopUp] = useState(false);
+  const [popUpImgSrc, setPopUpImgSrc] = useState('');
 
-  componentDidMount() {
+  useEffect(() => {
     document.documentElement.scrollTop = 0;
-    this.getGame();
-    if (!this.props.selectedGame || !this.props.gameId) {
-      this.setState({ error: true });
-    }
-  }
+    getGame();
+  }, []);
 
-  onGameLoaded = (game) => {
-    this.setState({
-      loading: false,
-    });
-    this.props.setGame(game);
+  const onGameLoaded = (game) => {
+    props.setGame(game);
   };
 
-  onError = () => {
-    this.setState({ error: true, loading: false });
+  const getGame = () => {
+    getSpecificGame(props.gameId).then(onGameLoaded);
   };
 
-  getGame = () => {
-    this.portalService
-      .getSpecificGame(this.props.gameId)
-      .then(this.onGameLoaded)
-      .catch(this.onError);
+  const onImageClick = (e) => {
+    setPopUp(true);
+    setPopUpImgSrc(e.target.src);
   };
 
-  onImageClick = (e) => {
-    this.setState({ popUp: true, popUpImgSrc: e.target.src });
+  const closePopUp = () => {
+    setPopUp(false);
   };
 
-  closePopUp = () => {
-    this.setState({ popUp: false });
+  const createMarkup = () => {
+    return { __html: props.selectedGame.description };
   };
 
-  createMarkup = () => {
-    return { __html: this.props.selectedGame.description };
-  };
-
-  renderItem = (props) => {
+  const renderItem = (props) => {
     const { thumbnail, title } = props;
 
     const content = (
@@ -83,20 +64,17 @@ class SpecificGame extends Component {
                   <img src={thumbnail} alt={title} className="game__img" />
                 </div>
                 <SpecificGameScreenshots
-                  selectedGame={this.props.selectedGame}
-                  onImageClick={this.onImageClick}
+                  selectedGame={props}
+                  onImageClick={onImageClick}
                 />
               </div>
               <div className="game__col-2">
                 <div
                   className="game__description"
-                  ref={this.myRef}
-                  dangerouslySetInnerHTML={this.createMarkup()}
+                  dangerouslySetInnerHTML={createMarkup()}
                 />
-                <SpecificGameInfo selectedGame={this.props.selectedGame} />
-                <SpecificGameRequirements
-                  selectedGame={this.props.selectedGame}
-                />
+                <SpecificGameInfo selectedGame={props} />
+                <SpecificGameRequirements selectedGame={props} />
               </div>
             </div>
           </div>
@@ -106,30 +84,25 @@ class SpecificGame extends Component {
     return content;
   };
 
-  render() {
-    const { error, loading, popUpImgSrc, popUp } = this.state;
+  const item = renderItem(props.selectedGame);
 
-    const item = this.renderItem(this.props.selectedGame);
+  const spinner = loading ? <Spinner /> : null;
+  const errorMessage = error ? <ErrorMessage /> : null;
+  const content = !(loading || error) ? item : null;
+  const className = loading || error ? 'game__spinner' : 'game';
 
-    const spinner = loading ? <Spinner /> : null;
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const content = !(loading || error) ? item : null;
-
-    let className = loading || error ? 'game__spinner' : 'game';
-
-    return (
-      <div className={className}>
-        {spinner}
-        {errorMessage}
-        {content}
-        <SpecificGamePopup
-          popUpImgSrc={popUpImgSrc}
-          popUp={popUp}
-          closePopUp={this.closePopUp}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div className={className}>
+      {spinner}
+      {errorMessage}
+      {content}
+      <SpecificGamePopup
+        popUpImgSrc={popUpImgSrc}
+        popUp={popUp}
+        closePopUp={closePopUp}
+      />
+    </div>
+  );
+};
 
 export default SpecificGame;

@@ -1,46 +1,30 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
 import Spinner from '../Spinner/Spinner';
-import PortalService from '../../services/services';
+import usePortalService from '../../services/services';
 
 import { transitionStyles, defaultStyle, duration } from '../../data/data';
 import '../ExploreMoo/exploreMoo.scss';
 
-class ExploreMmo extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      mmoList: [],
-      loading: true,
-      error: false,
-    };
+const ExploreMmo = (props) => {
+  const { loading, error, getCategory } = usePortalService();
+  const [mmoList, setMmoList] = useState([]);
 
-    this.portalService = new PortalService();
-  }
+  useEffect(() => {
+    getMMo();
+  }, []);
 
-  componentDidMount() {
-    this.getMMo();
-  }
-
-  onError = () => {
-    this.setState({ loading: false, error: true });
-  };
-
-  onMMoLoaded = (arr) => {
+  const onMMoLoaded = (arr) => {
     let item = arr.slice(0, 4);
-
-    this.setState({ mmoList: item, loading: false });
+    setMmoList(item);
   };
 
-  getMMo = () => {
-    this.portalService
-      .getCategory('mmorpg')
-      .then(this.onMMoLoaded)
-      .catch(this.onError);
+  const getMMo = () => {
+    getCategory('mmorpg').then(onMMoLoaded);
   };
 
-  renderItems = (arr) => {
+  const renderItems = (arr) => {
     const items = (
       <Transition in={true} timeout={duration} appear mountOnEnter>
         {(state) =>
@@ -58,8 +42,8 @@ class ExploreMmo extends Component {
               >
                 <Link
                   className="mmo__link"
-                  to={`/game/${id}`}
-                  onClick={() => this.props.onGameSelected(id)}
+                  to={`/game-${id}`}
+                  onClick={() => props.onGameSelected(id)}
                 >
                   <div className="mmo__img-cont">
                     <img className="mmo__img" src={thumbnail} alt={title} />
@@ -79,38 +63,33 @@ class ExploreMmo extends Component {
     return items;
   };
 
-  render() {
-    const { mmoList, loading, error } = this.state;
-
-    const content = this.renderItems(mmoList);
-
-    const spinner = loading ? <Spinner /> : null;
-    const errorMessage = error ? (
-      <div className="mmo__error-message">
-        Something went wrong. Refresh the page or try again later
-      </div>
-    ) : null;
-
-    const className = loading || error ? 'mmo__spinner' : 'mmo__inner';
-    return (
-      <div className="mmo">
-        <div className="container">
-          <div className="mmo__top-side">
-            <div className="mmo__title">Explore mmo games</div>
-            <div className="mmo__button button">
-              <Link to="/game-list">browse all </Link>
-            </div>
-          </div>
-
-          <div className={className}>
-            {spinner}
-            {errorMessage}
-            {content}
+  const items = renderItems(mmoList);
+  const spinner = loading ? <Spinner /> : null;
+  const errorMessage = error ? (
+    <div className="mmo__error-message">
+      Something went wrong. Refresh the page or try again later
+    </div>
+  ) : null;
+  const content = !(loading || error) ? items : null;
+  const className = loading || error ? 'mmo__spinner' : 'mmo__inner';
+  return (
+    <div className="mmo">
+      <div className="container">
+        <div className="mmo__top-side">
+          <div className="mmo__title">Explore mmo games</div>
+          <div className="mmo__button button">
+            <Link to="/game_list">browse all </Link>
           </div>
         </div>
+
+        <div className={className}>
+          {spinner}
+          {errorMessage}
+          {content}
+        </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default ExploreMmo;

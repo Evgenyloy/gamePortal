@@ -1,10 +1,10 @@
-import { Component } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { DiWindows } from 'react-icons/di';
 import { TbBrowser } from 'react-icons/tb';
 import { Transition } from 'react-transition-group';
 
-import PortalService from '../../services/services';
+import usePortalService from '../../services/services';
 import Filter from '../Filter/Filter';
 import Spinner from '../Spinner/Spinner';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
@@ -12,96 +12,65 @@ import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import { transitionStyles, defaultStyle, duration } from '../../data/data';
 import '../GameList/gameList.scss';
 
-class GameList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      gamesList: [],
-      loading: true,
-      error: false,
-      itemPerPage: 12,
-      currentArr: null,
-      errorFilterNoMatches: false,
-    };
+const GameList = (props) => {
+  const { error, loading, getFilterdGame } = usePortalService();
 
-    this.portalService = new PortalService();
-  }
+  const [gamesList, setGamesList] = useState([]);
+  const [itemPerPage, setItemPerPage] = useState(12);
+  const [currentArr, setCurrentArr] = useState(null);
+  const [errorFilterNoMatches, setErrorFilterNoMatches] = useState(false);
 
-  componentDidMount() {
-    this.getAllGames();
-    document.addEventListener('scroll', this.scrollHandler);
-  }
+  useEffect(() => {
+    getAllGames();
+    setErrorFilterNoMatches(false);
+  }, [props.sortBy, props.categorySelected, props.platformSelected]);
 
-  componentDidUpdate(prevProps) {
-    if (
-      this.props.platformSelected !== prevProps.platformSelected ||
-      this.props.categorySelected !== prevProps.categorySelected ||
-      this.props.sortBy !== prevProps.sortBy
-    ) {
-      this.getAllGames();
-      this.setState({
-        errorFilterNoMatches: false,
-        error: false,
-      });
-    }
-  }
+  useEffect(() => {
+    document.addEventListener('scroll', scrollHandler);
+    return () => document.removeEventListener('scroll', scrollHandler);
+  });
 
-  componentWillUnmount() {
-    document.removeEventListener('scroll', this.scrollHandler);
-  }
+  useEffect(() => {
+    getAllGames();
+  }, [itemPerPage]);
 
-  onGamesLoaded = (games) => {
+  const onGamesLoaded = (games) => {
     if (games.status === 0) {
-      this.setState({ errorFilterNoMatches: games.status_message });
+      setErrorFilterNoMatches(games.status_message);
     }
-
-    const game = games.slice(0, this.state.itemPerPage);
-
-    this.setState({
-      gamesList: game,
-      loading: false,
-      currentArr: games.length,
-      error: false,
-    });
+    const game = games.slice(0, itemPerPage);
+    setGamesList(game);
+    setCurrentArr(games.length);
   };
 
-  onError = () => {
-    this.setState({ error: true, loading: false, gamesList: [] });
+  const onError = () => {
+    setGamesList([]);
   };
 
-  errorReset = () => {
-    this.setState({ errorFilterNoMatches: false });
+  const errorReset = () => {
+    setErrorFilterNoMatches(false);
   };
 
-  getAllGames = () => {
-    this.portalService
-      .getFilterdGame(
-        this.props.platformSelected,
-        this.props.categorySelected,
-        this.props.sortBy
-      )
-      .then(this.onGamesLoaded)
-      .catch(this.onError);
+  const getAllGames = () => {
+    getFilterdGame(props.platformSelected, props.categorySelected, props.sortBy)
+      .then(onGamesLoaded)
+      .catch(onError);
   };
 
-  scrollHandler = (e) => {
+  const scrollHandler = (e) => {
     const scrollHeight = e.target.documentElement.scrollHeight;
     const scrollTop = e.target.documentElement.scrollTop;
     const innerHeight = window.innerHeight;
 
     if (
       scrollHeight - (scrollTop + innerHeight) < 45 &&
-      this.state.gamesList.length < this.state.currentArr
+      gamesList.length < currentArr
     ) {
-      this.setState(() => ({
-        itemPerPage: this.state.itemPerPage + 12,
-      }));
-
-      this.getAllGames();
+      setItemPerPage(itemPerPage + 12);
     }
   };
 
-  renderItems = (arr) => {
+  const renderItems = (arr) => {
     const item = (
       <Transition in={true} timeout={duration} appear mountOnEnter>
         {(state) =>
@@ -134,8 +103,8 @@ class GameList extends Component {
 
                   <Link
                     className="gamelist__link"
-                    to={`/game/${id}`}
-                    onClick={() => this.props.onGameSelected(id)}
+                    to={`/game-${id}`}
+                    onClick={() => props.onGameSelected(id)}
                   >
                     <h3 className="gamelist__title">{title}</h3>
                   </Link>
@@ -157,39 +126,39 @@ class GameList extends Component {
     return item;
   };
 
-  render() {
-    const { error, loading, gamesList, errorFilterNoMatches } = this.state;
+  const spinner = loading ? <Spinner /> : null;
+  const errorMessage = error && !errorFilterNoMatches ? <ErrorMessage /> : null;
+  const errorFilter = errorFilterNoMatches ? (
+    <div className="gamelist__filterError">{errorFilterNoMatches}</div>
+  ) : null;
 
-    const spinner = loading ? <Spinner /> : null;
-    const errorMessage =
-      error && !errorFilterNoMatches ? <ErrorMessage /> : null;
-    const errorFilter = errorFilterNoMatches ? (
-      <div className="gamelist__filterError">{errorFilterNoMatches}</div>
-    ) : null;
+  const content = !(loading || error) ? renderItems(gamesList) : null;
+  const className =
+    loading || error || errorFilterNoMatches
+      ? 'gamelist__spinner'
+      : 'gamelist__inner';
 
-    const content = !(loading || error) ? this.renderItems(gamesList) : null;
-    let className = loading || error ? 'gamelist__spinner' : 'gamelist__inner';
-
-    return (
-      <div className="gamelist">
-        <div className="container">
-          <Filter
-            onFilterSelected={this.props.onFilterSelected}
-            platformSelected={this.props.platformSelected}
-            categorySelected={this.props.categorySelected}
-            sortBy={this.props.sortBy}
-            errorReset={this.errorReset}
-          />
-          <ul className={className}>
-            {spinner}
-            {errorFilter}
-            {errorMessage}
-            {content}
-          </ul>
-        </div>
+  return (
+    <div className="gamelist">
+      <div className="container">
+        <Filter
+          platformSelected={props.platformSelected}
+          categorySelected={props.categorySelected}
+          sortBy={props.sortBy}
+          errorReset={errorReset}
+          setPlatformSelected={props.setPlatformSelected}
+          setCategorySelected={props.setCategorySelected}
+          setSortBy={props.setSortBy}
+        />
+        <ul className={className}>
+          {spinner}
+          {errorFilter}
+          {errorMessage}
+          {content}
+        </ul>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default GameList;

@@ -35,6 +35,7 @@
     width: 215px;
     height: 146px;
     cursor: pointer;
+    transition: all 0.15s linear;
     &:hover {
       transform: scale(1.05);
     }

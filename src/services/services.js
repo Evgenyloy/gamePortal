@@ -1,7 +1,11 @@
-class PortalService {
-  _apiBase = 'https://mmo-games.p.rapidapi.com';
+import { useHttp } from '../hooks/http.hook';
 
-  _options = {
+const usePortalService = () => {
+  const { loading, request, error } = useHttp();
+
+  const _apiBase = 'https://mmo-games.p.rapidapi.com';
+
+  const _options = {
     method: 'GET',
     headers: {
       'X-RapidAPI-Key': '91b58b67a8msh2bd4b616724fea5p1339a3jsn28cd7698ccec',
@@ -9,49 +13,49 @@ class PortalService {
     },
   };
 
-  getResource = async (url) => {
-    let res = await fetch(url, this._options);
-
-    if (!res.ok) {
-      throw new Error(`Could not fetch ${url}, status: ${res.status}`);
-    }
-    return await res.json();
-  };
-
-  getNews = async () => {
-    const res = await this.getResource(`${this._apiBase}/latestnews`);
+  const getNews = async () => {
+    const res = await request(`${_apiBase}/latestnews`, _options);
     return res;
   };
 
-  getCategory = async (category) => {
-    const res = await this.getResource(
-      `${this._apiBase}/games?category=${category}`
+  const getCategory = async (category) => {
+    const res = await request(
+      `${_apiBase}/games?category=${category}`,
+      _options
     );
 
     return res;
   };
 
-  getAllGames = async (games) => {
-    const res = await this.getResource(
-      `${this._apiBase}/games?platform=${games}`
-    );
+  const getAllGames = async (games) => {
+    const res = await request(`${_apiBase}/games?platform=${games}`, _options);
     return res;
   };
 
-  getSpecificGame = async (game) => {
+  const getSpecificGame = async (game) => {
     if (typeof game !== 'number') return;
 
-    const res = await this.getResource(`${this._apiBase}/game?id=${game}`);
+    const res = await request(`${_apiBase}/game?id=${game}`, _options);
     return res;
   };
 
-  getFilterdGame = async (platform, category, sortBy) => {
-    const res = await this.getResource(
-      `${this._apiBase}/games?platform=${platform}&category=${category}&sort-by=${sortBy}`
+  const getFilterdGame = async (platform, category, sortBy) => {
+    const res = await request(
+      `${_apiBase}/games?platform=${platform}&category=${category}&sort-by=${sortBy}`,
+      _options
     );
 
     return res;
   };
-}
+  return {
+    loading,
+    error,
+    getFilterdGame,
+    getSpecificGame,
+    getAllGames,
+    getCategory,
+    getNews,
+  };
+};
 
-export default PortalService;
+export default usePortalService;

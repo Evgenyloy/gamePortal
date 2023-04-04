@@ -23,7 +23,7 @@ const Header = (props) => {
       return (
         <li className="sub-menu__item" key={name}>
           <Link
-            to="/game-list"
+            to="/game_list"
             className="sub-menu__link"
             data-link={data}
             onClick={onTagClick}
@@ -55,7 +55,7 @@ const Header = (props) => {
           </Link>
           <nav className="header__nav">
             <Link
-              to="/game-list"
+              to="/game_list"
               className="header__link"
               onClick={onMainLinkClick}
               data-link="pc"
@@ -63,14 +63,14 @@ const Header = (props) => {
               PC games
             </Link>
             <Link
-              to="/game-list"
+              to="/game_list"
               className="header__link"
               onClick={onMainLinkClick}
               data-link="browser"
             >
               browser games
             </Link>
-            <Link to="/all-news" className="header__link" data-link="news">
+            <Link to="/news-list" className="header__link" data-link="news">
               news
             </Link>
           </nav>

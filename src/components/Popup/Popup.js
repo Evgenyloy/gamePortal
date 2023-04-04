@@ -1,85 +1,82 @@
-import { Component } from 'react';
 import { Transition } from 'react-transition-group';
 import { Link } from 'react-router-dom';
 
 import './popup.scss';
 
-class Popup extends Component {
-  onClick = (e) => {
-    this.props.onMainLinkClick(e.target.dataset.link);
-    this.props.onBurgerClick();
+const Popup = (props) => {
+  const onClick = (e) => {
+    props.onMainLinkClick(e.target.dataset.link);
+    props.onBurgerClick();
   };
 
-  render() {
-    const duration = 400;
+  const duration = 400;
 
-    const defaultStyle = {
-      transition: `all ${duration}ms linear 0s`,
-    };
+  const defaultStyle = {
+    transition: `all ${duration}ms linear 0s`,
+  };
 
-    const transitionStyles = {
-      entering: { right: '-100%' },
-      entered: { right: 0 },
-      exiting: { right: '-100%' },
-      exited: { right: '-100%' },
-    };
+  const transitionStyles = {
+    entering: { right: '-100%' },
+    entered: { right: 0 },
+    exiting: { right: '-100%' },
+    exited: { right: '-100%' },
+  };
 
-    return (
-      <Transition
-        in={this.props.popup}
-        timeout={{
-          appear: 10,
-          enter: 0,
-          exit: 450,
-        }}
-        mountOnEnter
-        unmountOnExit
-      >
-        {(state) => (
-          <div
-            className="popup"
-            tabIndex={0}
-            style={{ ...defaultStyle, ...transitionStyles[state] }}
-          >
-            <nav className="popup__nav">
-              <Link
-                to="/game-list"
-                className="popup__link"
-                data-link="pc"
-                onClick={this.onClick}
-              >
-                pc games
-              </Link>
-              <Link
-                to="/game-list"
-                className="popup__link"
-                data-link="browser"
-                onClick={this.onClick}
-              >
-                browser games
-              </Link>
-              <Link
-                to="/all-news"
-                className="popup__link"
-                data-link="pc"
-                onClick={this.onClick}
-              >
-                news
-              </Link>
-              <Link
-                to="/"
-                className="popup__link"
-                data-link="pc"
-                onClick={this.onClick}
-              >
-                home
-              </Link>
-            </nav>
-          </div>
-        )}
-      </Transition>
-    );
-  }
-}
+  return (
+    <Transition
+      in={props.popup}
+      timeout={{
+        appear: 10,
+        enter: 0,
+        exit: 450,
+      }}
+      mountOnEnter
+      unmountOnExit
+    >
+      {(state) => (
+        <div
+          className="popup"
+          tabIndex={0}
+          style={{ ...defaultStyle, ...transitionStyles[state] }}
+        >
+          <nav className="popup__nav">
+            <Link
+              to="/game_list"
+              className="popup__link"
+              data-link="pc"
+              onClick={onClick}
+            >
+              pc games
+            </Link>
+            <Link
+              to="/game_list"
+              className="popup__link"
+              data-link="browser"
+              onClick={onClick}
+            >
+              browser games
+            </Link>
+            <Link
+              to="/news-list"
+              className="popup__link"
+              data-link="pc"
+              onClick={onClick}
+            >
+              news
+            </Link>
+            <Link
+              to="/"
+              className="popup__link"
+              data-link="pc"
+              onClick={onClick}
+            >
+              home
+            </Link>
+          </nav>
+        </div>
+      )}
+    </Transition>
+  );
+};
 
 export default Popup;
