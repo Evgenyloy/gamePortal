@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
+import { useDispatch } from 'react-redux';
+import { selectNews } from '../../actions';
 
 import usePortalService from '../../services/services';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
@@ -9,14 +11,16 @@ import Spinner from '../Spinner/Spinner';
 import { transitionStyles, defaultStyle, duration } from '../../data/data';
 import './newsBlock.scss';
 
-const NewsBlock = (props) => {
-  const { loading, error, getNews } = usePortalService();
+const NewsBlock = () => {
+  const dispatch = useDispatch();
 
+  const { loading, error, getNews } = usePortalService();
   const [newsList, setNewsList] = useState([]);
 
   useEffect(() => {
     setNewsList([]);
     getPortalNews();
+    // eslint-disable-next-line
   }, []);
 
   const onNewsLoaded = (news) => {
@@ -25,6 +29,11 @@ const NewsBlock = (props) => {
     );
     const newsArr = filteredNews.slice(0, 4);
     setNewsList(newsArr);
+  };
+
+  const onNewsClick = (item) => {
+    dispatch(selectNews(item));
+    localStorage.setItem('news', JSON.stringify(item));
   };
 
   const getPortalNews = () => {
@@ -54,7 +63,10 @@ const NewsBlock = (props) => {
                     className="news__link"
                     to="/news"
                     onClick={() => {
-                      props.onNewsSelected(item);
+                      onNewsClick(item);
+                    }}
+                    onContextMenu={() => {
+                      onNewsClick(item);
                     }}
                   >
                     <img

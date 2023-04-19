@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { DiWindows } from 'react-icons/di';
 import { TbBrowser } from 'react-icons/tb';
 import { Transition } from 'react-transition-group';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectGame } from '../../actions';
 
 import usePortalService from '../../services/services';
 import Filter from '../Filter/Filter';
@@ -12,9 +14,12 @@ import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import { transitionStyles, defaultStyle, duration } from '../../data/data';
 import '../GameList/gameList.scss';
 
-const GameList = (props) => {
-  const { error, loading, getFilterdGame } = usePortalService();
+const GameList = () => {
+  const { platform, category, sort } = useSelector((state) => state.filters);
+  const dispatch = useDispatch();
 
+  const { error, loading, getFilterdGame, getSpecificGame } =
+    usePortalService();
   const [gamesList, setGamesList] = useState([]);
   const [itemPerPage, setItemPerPage] = useState(12);
   const [currentArr, setCurrentArr] = useState(null);
@@ -23,7 +28,8 @@ const GameList = (props) => {
   useEffect(() => {
     getAllGames();
     setErrorFilterNoMatches(false);
-  }, [props.sortBy, props.categorySelected, props.platformSelected]);
+    // eslint-disable-next-line
+  }, [sort, category, platform]);
 
   useEffect(() => {
     document.addEventListener('scroll', scrollHandler);
@@ -32,6 +38,7 @@ const GameList = (props) => {
 
   useEffect(() => {
     getAllGames();
+    // eslint-disable-next-line
   }, [itemPerPage]);
 
   const onGamesLoaded = (games) => {
@@ -52,9 +59,7 @@ const GameList = (props) => {
   };
 
   const getAllGames = () => {
-    getFilterdGame(props.platformSelected, props.categorySelected, props.sortBy)
-      .then(onGamesLoaded)
-      .catch(onError);
+    getFilterdGame(platform, category, sort).then(onGamesLoaded).catch(onError);
   };
 
   const scrollHandler = (e) => {
@@ -70,55 +75,58 @@ const GameList = (props) => {
     }
   };
 
+  const onGameClick = (item) => {
+    localStorage.setItem('selectedGame', JSON.stringify(item));
+
+    dispatch(selectGame(item, getSpecificGame));
+  };
+
   const renderItems = (arr) => {
     const item = (
       <Transition in={true} timeout={duration} appear mountOnEnter>
         {(state) =>
-          arr.map(
-            ({ id, title, thumbnail, genre, short_description, platform }) => {
-              const gif =
-                platform === 'PC (Windows), Web Browser' ||
-                platform === 'Web Browser' ? (
-                  <TbBrowser />
-                ) : (
-                  <DiWindows />
-                );
-
-              return (
-                <li
-                  className="gamelist__item"
-                  key={id}
-                  style={{
-                    ...defaultStyle,
-                    ...transitionStyles[state],
-                  }}
-                >
-                  <div className="gamelist__img-cont">
-                    <img
-                      src={thumbnail}
-                      alt={title}
-                      className="gamelist__img"
-                    />
-                  </div>
-
-                  <Link
-                    className="gamelist__link"
-                    to={`/game-${id}`}
-                    onClick={() => props.onGameSelected(id)}
-                  >
-                    <h3 className="gamelist__title">{title}</h3>
-                  </Link>
-
-                  <p className="gamelist__desc">{short_description}</p>
-
-                  <div className="gamelist__genre">
-                    {genre}
-                    {gif}
-                  </div>
-                </li>
+          arr.map((item) => {
+            const { id, title, thumbnail, genre, short_description, platform } =
+              item;
+            const gif =
+              platform === 'PC (Windows), Web Browser' ||
+              platform === 'Web Browser' ? (
+                <TbBrowser />
+              ) : (
+                <DiWindows />
               );
-            }
-          )
+
+            return (
+              <li
+                className="gamelist__item"
+                key={id}
+                style={{
+                  ...defaultStyle,
+                  ...transitionStyles[state],
+                }}
+              >
+                <div className="gamelist__img-cont">
+                  <img src={thumbnail} alt={title} className="gamelist__img" />
+                </div>
+
+                <Link
+                  className="gamelist__link"
+                  to={`/game-${id}`}
+                  onClick={() => onGameClick(item)}
+                  onContextMenu={() => onGameClick(item)}
+                >
+                  <h3 className="gamelist__title">{title}</h3>
+                </Link>
+
+                <p className="gamelist__desc">{short_description}</p>
+
+                <div className="gamelist__genre">
+                  {genre}
+                  {gif}
+                </div>
+              </li>
+            );
+          })
         }
       </Transition>
     );
@@ -141,15 +149,7 @@ const GameList = (props) => {
   return (
     <div className="gamelist">
       <div className="container">
-        <Filter
-          platformSelected={props.platformSelected}
-          categorySelected={props.categorySelected}
-          sortBy={props.sortBy}
-          errorReset={errorReset}
-          setPlatformSelected={props.setPlatformSelected}
-          setCategorySelected={props.setCategorySelected}
-          setSortBy={props.setSortBy}
-        />
+        <Filter errorReset={errorReset} />
         <ul className={className}>
           {spinner}
           {errorFilter}

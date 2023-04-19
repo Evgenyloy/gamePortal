@@ -1,6 +1,8 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
+import { useDispatch } from 'react-redux';
+import { selectGame } from '../../actions';
 
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import Spinner from '../Spinner/Spinner';
@@ -9,13 +11,15 @@ import { transitionStyles, defaultStyle, duration } from '../../data/data';
 
 import './randomGame.scss';
 
-const RandomGame = (props) => {
-  const { loading, error, getCategory } = usePortalService();
+const RandomGame = () => {
+  const dispatch = useDispatch();
+  const { loading, error, getCategory, getSpecificGame } = usePortalService();
 
   const [randomGames, setRandomGames] = useState([]);
 
   useEffect(() => {
     getRandomGame();
+    // eslint-disable-next-line
   }, []);
 
   const getRandomGame = () => {
@@ -46,12 +50,16 @@ const RandomGame = (props) => {
     let item = arr.slice(0, 8);
     setRandomGames(item);
   };
-
+  const onGameClick = (item) => {
+    localStorage.setItem('selectedGame', JSON.stringify(item));
+    dispatch(selectGame(item, getSpecificGame));
+  };
   const renderItems = (arr) => {
     const item = (
       <Transition in={true} timeout={duration} appear mountOnEnter>
         {(state) =>
-          arr.map(({ title, id, thumbnail, short_description }) => {
+          arr.map((item) => {
+            const { title, id, thumbnail, short_description } = item;
             const desc = short_description.slice(0, 70) + '...';
             return (
               <li
@@ -73,7 +81,8 @@ const RandomGame = (props) => {
                   <Link
                     to={`/game-${id}`}
                     className="random-game__link"
-                    onClick={() => props.onGameSelected(id)}
+                    onClick={() => onGameClick(item)}
+                    onContextMenu={() => onGameClick(item)}
                   >
                     <p className="random-game__text line-clamp">{desc}</p>
                   </Link>

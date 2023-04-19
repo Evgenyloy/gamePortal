@@ -1,13 +1,33 @@
 import { Transition } from 'react-transition-group';
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 
+import { platformSelected } from '../../actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { changePopUp } from '../../actions';
 import './popup.scss';
 
-const Popup = (props) => {
+const Popup = () => {
+  const popupVisible = useSelector((state) => state.popUp.popupVisible);
+  const dispatch = useDispatch();
   const onClick = (e) => {
-    props.onMainLinkClick(e.target.dataset.link);
-    props.onBurgerClick();
+    dispatch(platformSelected(e.target.dataset.link));
+    dispatch(changePopUp());
   };
+
+  useEffect(() => {
+    const closePopup = () => {
+      if (!document.body.classList.contains('noscroll')) return;
+
+      if (window.innerWidth > 650) {
+        document.body.classList.remove('noscroll');
+        dispatch(changePopUp(false));
+      }
+    };
+    window.addEventListener('resize', closePopup);
+    return () => window.removeEventListener('resize', closePopup);
+    // eslint-disable-next-line
+  }, []);
 
   const duration = 400;
 
@@ -24,7 +44,7 @@ const Popup = (props) => {
 
   return (
     <Transition
-      in={props.popup}
+      in={popupVisible}
       timeout={{
         appear: 10,
         enter: 0,

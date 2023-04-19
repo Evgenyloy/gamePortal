@@ -1,7 +1,9 @@
-import { useState, useEffect, memo } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { BsFillArrowUpCircleFill } from 'react-icons/bs';
 import { Transition } from 'react-transition-group';
+import { useDispatch } from 'react-redux';
+import { selectNews } from '../../actions';
 
 import usePortalService from '../../services/services';
 import Spinner from '../Spinner/Spinner';
@@ -11,7 +13,8 @@ import RandomGame from '../RandomGame/RandomGame';
 import { transitionStyles, defaultStyle, duration } from '../../data/data';
 import './newsList.scss';
 
-const NewsList = (props) => {
+const NewsList = () => {
+  const dispatch = useDispatch();
   const { loading, error, getNews } = usePortalService();
 
   const [newsList, setNewsList] = useState([]);
@@ -29,6 +32,7 @@ const NewsList = (props) => {
 
   useEffect(() => {
     getPortalNews();
+    // eslint-disable-next-line
   }, [itemPerPage]);
 
   const scrollUphandler = () => {
@@ -62,7 +66,8 @@ const NewsList = (props) => {
   };
 
   const onNewsClick = (item) => {
-    props.onNewsSelected(item);
+    localStorage.setItem('news', JSON.stringify(item));
+    dispatch(selectNews(item));
   };
 
   const onBtnUpClick = () => {
@@ -97,6 +102,7 @@ const NewsList = (props) => {
                     className="news-list__desc"
                     to="/news"
                     onClick={() => onNewsClick(item)}
+                    onContextMenu={() => onNewsClick(item)}
                   >
                     {short_description}
                   </Link>
@@ -133,7 +139,7 @@ const NewsList = (props) => {
           </div>
           <div className="news-list__col-2">
             <div className="container">
-              <RandomGame onGameSelected={props.onGameSelected} />
+              <RandomGame />
             </div>
           </div>
           <div className={btnUpClassName} onClick={onBtnUpClick}>

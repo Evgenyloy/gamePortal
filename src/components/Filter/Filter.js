@@ -1,19 +1,24 @@
 import { tagList1 } from '../../data/data';
+import { platformSelected, categorySelected, sortBy } from '../../actions';
+import { useDispatch, useSelector } from 'react-redux';
 import './filter.scss';
 
 const Filter = (props) => {
+  const dispatch = useDispatch();
+  const { platform, category, sort } = useSelector((state) => state.filters);
+
   const onPlatformSelected = (e) => {
-    props.setPlatformSelected(e.target.dataset.value);
+    dispatch(platformSelected(e.target.dataset.value));
     props.errorReset();
   };
 
   const onTagSelected = (e) => {
-    props.setCategorySelected(e.target.dataset.value);
+    dispatch(categorySelected(e.target.dataset.value));
     props.errorReset();
   };
 
   const onSortBy = (e) => {
-    props.setSortBy(e.target.dataset.value);
+    dispatch(sortBy(e.target.dataset.value));
     props.errorReset();
   };
   const tagItemRender = () => {
@@ -35,19 +40,19 @@ const Filter = (props) => {
 
   const tagList = tagItemRender();
 
-  let platform;
-  switch (props.platformSelected) {
+  let selectedPlatform;
+  switch (platform) {
     case 'pc':
-      platform = 'PC (Windows)';
+      selectedPlatform = 'PC (Windows)';
       break;
     case 'browser':
-      platform = 'web browser';
+      selectedPlatform = 'web browser';
       break;
     case 'all':
-      platform = 'All Platforms';
+      selectedPlatform = 'All Platforms';
       break;
     default:
-      platform = 'All Platforms';
+      selectedPlatform = 'All Platforms';
       break;
   }
 
@@ -55,7 +60,7 @@ const Filter = (props) => {
     <div className="gamelist-filter">
       <div className="dropdown">
         <span>Platforms:</span>
-        <div className="dropdown__button">{platform}</div>
+        <div className="dropdown__button">{selectedPlatform}</div>
         <ul className="dropdown__list">
           <li
             className="dropdown__list-item"
@@ -85,12 +90,12 @@ const Filter = (props) => {
       </div>
       <div className="dropdown">
         <span>Genre/Tag:</span>
-        <div className="dropdown__button">{props.categorySelected}</div>
+        <div className="dropdown__button">{category}</div>
         <ul className="dropdown__list dropdown__list-tag">{tagList}</ul>
       </div>
       <div className="dropdown">
         <span>sortBy:</span>
-        <div className="dropdown__button">{props.sortBy}</div>
+        <div className="dropdown__button">{sort}</div>
         <ul className="dropdown__list ">
           <li
             className="dropdown__list-item"

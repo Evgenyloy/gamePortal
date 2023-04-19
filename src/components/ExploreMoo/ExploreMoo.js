@@ -1,18 +1,23 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
+import { useDispatch } from 'react-redux';
+import { selectGame } from '../../actions';
+
 import Spinner from '../Spinner/Spinner';
 import usePortalService from '../../services/services';
-
 import { transitionStyles, defaultStyle, duration } from '../../data/data';
 import '../ExploreMoo/exploreMoo.scss';
 
-const ExploreMmo = (props) => {
-  const { loading, error, getCategory } = usePortalService();
+const ExploreMmo = () => {
+  const dispatch = useDispatch();
+
+  const { loading, error, getCategory, getSpecificGame } = usePortalService();
   const [mmoList, setMmoList] = useState([]);
 
   useEffect(() => {
     getMMo();
+    // eslint-disable-next-line
   }, []);
 
   const onMMoLoaded = (arr) => {
@@ -24,13 +29,16 @@ const ExploreMmo = (props) => {
     getCategory('mmorpg').then(onMMoLoaded);
   };
 
+  const onGameClick = (item) => {
+    dispatch(selectGame(item, getSpecificGame));
+  };
+
   const renderItems = (arr) => {
     const items = (
       <Transition in={true} timeout={duration} appear mountOnEnter>
         {(state) =>
           arr.map((item) => {
             const { thumbnail, title, id } = item;
-
             return (
               <div
                 className="mmo__item"
@@ -43,7 +51,8 @@ const ExploreMmo = (props) => {
                 <Link
                   className="mmo__link"
                   to={`/game-${id}`}
-                  onClick={() => props.onGameSelected(id)}
+                  onClick={() => onGameClick(item)}
+                  onContextMenu={() => onGameClick(item)}
                 >
                   <div className="mmo__img-cont">
                     <img className="mmo__img" src={thumbnail} alt={title} />
@@ -72,6 +81,7 @@ const ExploreMmo = (props) => {
   ) : null;
   const content = !(loading || error) ? items : null;
   const className = loading || error ? 'mmo__spinner' : 'mmo__inner';
+
   return (
     <div className="mmo">
       <div className="container">

@@ -1,21 +1,30 @@
 import { Link } from 'react-router-dom';
 import { tagsData } from '../../data/data';
+
+import { platformSelected, categorySelected, changePopUp } from '../../actions';
+import { useDispatch, useSelector } from 'react-redux';
+
 import './header.scss';
 
-const Header = (props) => {
+const Header = () => {
+  const popupVisible = useSelector((state) => state.popUp.popupVisible);
+  const platform = useSelector((state) => state.filters.platform);
+
+  const dispatch = useDispatch();
+
   const onButtonClick = () => {
-    props.onBurgerClick();
+    dispatch(changePopUp());
     document.body.classList.toggle('noscroll');
   };
 
   const onMainLinkClick = (e) => {
-    props.onMainLinkClick(e.currentTarget.dataset.link);
-
+    if (platform === e.currentTarget.dataset.link) return;
+    dispatch(platformSelected(e.currentTarget.dataset.link));
     document.body.classList.remove('noscroll');
   };
 
   const onTagClick = (e) => {
-    props.onTagClick(e.target.dataset.link);
+    dispatch(categorySelected(e.target.dataset.link));
   };
 
   const tagsRender = (tagsData) => {
@@ -36,7 +45,7 @@ const Header = (props) => {
     return item;
   };
 
-  const burgerClassName = props.popupVisible ? 'burger active' : 'burger';
+  const burgerClassName = popupVisible ? 'burger active' : 'burger';
 
   const tagList = tagsRender(tagsData);
   return (
