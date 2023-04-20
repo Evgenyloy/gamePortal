@@ -1,37 +1,4 @@
-export const platformSelected = (platform) => {
-  return {
-    type: 'PLATFORM_SELECTED',
-    payload: platform,
-  };
-};
-
-export const categorySelected = (category) => {
-  return {
-    type: 'CATEGORY_SELECTED',
-    payload: category,
-  };
-};
-
-export const sortBy = (sortby) => {
-  return {
-    type: 'SORT_BY',
-    payload: sortby,
-  };
-};
-
-export const changePopUp = (arg) => {
-  return {
-    type: 'CHANGE_POPUP_VISIBLE',
-    payload: arg,
-  };
-};
-
-export const selectNews = (news) => {
-  return {
-    type: 'SELECT_NEWS',
-    payload: news,
-  };
-};
+import { createAction } from '@reduxjs/toolkit';
 
 export const selectGame = (game, getSpecificGame) => (dispatch) => {
   dispatch(gameFetching());
@@ -43,19 +10,18 @@ export const selectGame = (game, getSpecificGame) => (dispatch) => {
     .catch(() => dispatch(gameFetchingError()));
 };
 
-export const gameFetching = () => {
-  return {
-    type: 'GAME_FETCHING',
-  };
-};
-export const gameFetched = (game) => {
-  return {
-    type: 'GAME_FETCHED',
-    payload: game,
-  };
-};
-export const gameFetchingError = () => {
-  return {
-    type: 'GAME_FETCHING_ERROR',
-  };
-};
+export const platformSelected = createAction('PLATFORM_SELECTED');
+
+export const categorySelected = createAction('CATEGORY_SELECTED');
+
+export const sortBy = createAction('SORT_BY');
+
+export const changePopUp = createAction('CHANGE_POPUP_VISIBLE');
+
+export const selectNews = createAction('SELECT_NEWS');
+
+export const gameFetching = createAction('GAME_FETCHING');
+
+export const gameFetched = createAction('GAME_FETCHED');
+
+export const gameFetchingError = createAction('GAME_FETCHING_ERROR');

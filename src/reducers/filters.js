@@ -1,30 +1,24 @@
+import { createReducer } from '@reduxjs/toolkit';
+import { platformSelected, categorySelected, sortBy } from '../actions';
+
 const initialState = {
   platform: 'all',
   category: 'mmorpg',
   sort: 'relevance',
 };
 
-const filters = (state = initialState, action) => {
-  switch (action.type) {
-    case 'PLATFORM_SELECTED':
-      return {
-        ...state,
-        platform: action.payload,
-      };
-    case 'CATEGORY_SELECTED':
-      return {
-        ...state,
-        category: action.payload,
-      };
-    case 'SORT_BY':
-      return {
-        ...state,
-        sort: action.payload,
-      };
-
-    default:
-      return state;
-  }
-};
+const filters = createReducer(initialState, (builder) => {
+  builder
+    .addCase(platformSelected, (state, action) => {
+      state.platform = action.payload;
+    })
+    .addCase(categorySelected, (state, action) => {
+      state.category = action.payload;
+    })
+    .addCase(sortBy, (state, action) => {
+      state.sort = action.payload;
+    })
+    .addDefaultCase(() => {});
+});
 
 export default filters;
