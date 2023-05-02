@@ -1,43 +1,32 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
 import { useDispatch } from 'react-redux';
-import { selectNews } from '../../actions';
 
-import usePortalService from '../../services/services';
+import { selectNews } from '../../slices/selectedItemsSlice';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import Spinner from '../Spinner/Spinner';
-
 import { transitionStyles, defaultStyle, duration } from '../../data/data';
+import { useGetNewsListQuery } from '../../api/apiSlice';
+
 import './newsBlock.scss';
 
 const NewsBlock = () => {
+  const { data: news = [], isLoading, isError } = useGetNewsListQuery();
+
   const dispatch = useDispatch();
-
-  const { loading, error, getNews } = usePortalService();
-  const [newsList, setNewsList] = useState([]);
-
-  useEffect(() => {
-    setNewsList([]);
-    getPortalNews();
-    // eslint-disable-next-line
-  }, []);
 
   const onNewsLoaded = (news) => {
     const filteredNews = news.filter(
       (news) => !news.article_content.includes('&lt')
     );
     const newsArr = filteredNews.slice(0, 4);
-    setNewsList(newsArr);
+    return newsArr;
   };
 
   const onNewsClick = (item) => {
     dispatch(selectNews(item));
     localStorage.setItem('news', JSON.stringify(item));
-  };
-
-  const getPortalNews = () => {
-    getNews().then(onNewsLoaded);
   };
 
   const renderItems = (arr) => {
@@ -87,10 +76,10 @@ const NewsBlock = () => {
     return items;
   };
 
-  const content = renderItems(newsList);
-  const errorMessage = error ? <ErrorMessage /> : null;
-  const spinner = loading ? <Spinner /> : null;
-  const className = spinner || error ? 'news__spinner' : 'news__inner';
+  const content = renderItems(onNewsLoaded(news));
+  const errorMessage = isError ? <ErrorMessage /> : null;
+  const spinner = isLoading ? <Spinner /> : null;
+  const className = isLoading || isError ? 'news__spinner' : 'news__inner';
 
   return (
     <div className="news">

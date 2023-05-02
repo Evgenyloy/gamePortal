@@ -1,36 +1,30 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
 import { useDispatch } from 'react-redux';
-import { selectGame } from '../../actions';
 
+import { fetchGame } from '../../slices/selectedItemsSlice';
 import Spinner from '../Spinner/Spinner';
 import usePortalService from '../../services/services';
 import { transitionStyles, defaultStyle, duration } from '../../data/data';
+import { useGetMmoGamesQuery } from '../../api/apiSlice';
+
 import '../ExploreMoo/exploreMoo.scss';
 
 const ExploreMmo = () => {
+  const { data: mmoList = [], isLoading, isError } = useGetMmoGamesQuery();
+
   const dispatch = useDispatch();
 
-  const { loading, error, getCategory, getSpecificGame } = usePortalService();
-  const [mmoList, setMmoList] = useState([]);
-
-  useEffect(() => {
-    getMMo();
-    // eslint-disable-next-line
-  }, []);
+  const { getSpecificGame } = usePortalService();
 
   const onMMoLoaded = (arr) => {
-    let item = arr.slice(0, 4);
-    setMmoList(item);
-  };
-
-  const getMMo = () => {
-    getCategory('mmorpg').then(onMMoLoaded);
+    let randomNum = Math.floor(Math.random() * 15);
+    const item = arr.slice(0 + randomNum, 4 + randomNum);
+    return item;
   };
 
   const onGameClick = (item) => {
-    dispatch(selectGame(item, getSpecificGame));
+    dispatch(fetchGame(item, getSpecificGame));
   };
 
   const renderItems = (arr) => {
@@ -72,15 +66,15 @@ const ExploreMmo = () => {
     return items;
   };
 
-  const items = renderItems(mmoList);
-  const spinner = loading ? <Spinner /> : null;
-  const errorMessage = error ? (
+  const items = renderItems(onMMoLoaded(mmoList));
+  const spinner = isLoading ? <Spinner /> : null;
+  const errorMessage = isError ? (
     <div className="mmo__error-message">
       Something went wrong. Refresh the page or try again later
     </div>
   ) : null;
-  const content = !(loading || error) ? items : null;
-  const className = loading || error ? 'mmo__spinner' : 'mmo__inner';
+  const content = !(isLoading || isError) ? items : null;
+  const className = isLoading || isError ? 'mmo__spinner' : 'mmo__inner';
 
   return (
     <div className="mmo">

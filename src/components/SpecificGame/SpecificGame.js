@@ -8,14 +8,14 @@ import SpecificGameRequirements from './SpecificGameRequirements';
 import SpecificGameInfo from './SpecificGameInfo';
 import SpecificGameScreenshots from './SpecificGameScreenshots';
 import SpecificGamePopup from './SpecificGamePopup';
-
 import { transitionStyles, defaultStyle, duration } from '../../data/data';
+
 import '../SpecificGame/specificGame.scss';
 
 const SpecificGame = () => {
-  const { selectedGame, gameLoadingStatus } = useSelector(
-    (state) => state.selectedItems
-  );
+  const { selectedGame, gameLoadingStatus } = useSelector((state) => {
+    return state.selectedItems;
+  });
 
   const [popUp, setPopUp] = useState(false);
   const [popUpImgSrc, setPopUpImgSrc] = useState('');

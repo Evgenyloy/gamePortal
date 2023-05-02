@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Transition } from 'react-transition-group';
 import { useDispatch } from 'react-redux';
-import { selectGame } from '../../actions';
 
+import { fetchGame } from '../../slices/selectedItemsSlice';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import Spinner from '../Spinner/Spinner';
 import usePortalService from '../../services/services';
@@ -51,8 +51,7 @@ const RandomGame = () => {
     setRandomGames(item);
   };
   const onGameClick = (item) => {
-    localStorage.setItem('selectedGame', JSON.stringify(item));
-    dispatch(selectGame(item, getSpecificGame));
+    dispatch(fetchGame(item, getSpecificGame));
   };
   const renderItems = (arr) => {
     const item = (

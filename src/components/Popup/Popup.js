@@ -1,10 +1,11 @@
 import { Transition } from 'react-transition-group';
 import { Link } from 'react-router-dom';
 import { useEffect } from 'react';
-
-import { platformSelected } from '../../actions';
 import { useDispatch, useSelector } from 'react-redux';
-import { changePopUp } from '../../actions';
+
+import { platformSelected } from '../../slices/filtersSlice';
+import { changePopUp } from '../../slices/popupSlice';
+
 import './popup.scss';
 
 const Popup = () => {

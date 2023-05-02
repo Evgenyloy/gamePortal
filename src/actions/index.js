@@ -1,4 +1,4 @@
-import { createAction } from '@reduxjs/toolkit';
+/* import { createAction } from '@reduxjs/toolkit';
 
 export const selectGame = (game, getSpecificGame) => (dispatch) => {
   dispatch(gameFetching());
@@ -25,3 +25,4 @@ export const gameFetching = createAction('GAME_FETCHING');
 export const gameFetched = createAction('GAME_FETCHED');
 
 export const gameFetchingError = createAction('GAME_FETCHING_ERROR');
+ */

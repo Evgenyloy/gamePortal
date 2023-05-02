@@ -1,5 +1,9 @@
 import { tagList1 } from '../../data/data';
-import { platformSelected, categorySelected, sortBy } from '../../actions';
+import {
+  platformSelected,
+  categorySelected,
+  sortBy,
+} from '../../slices/filtersSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import './filter.scss';
 

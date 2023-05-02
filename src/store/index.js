@@ -1,12 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import filters from '../reducers/filters.js';
-import selectedItems from '../reducers/selectedItems.js';
-import popUp from '../reducers/popup.js';
+import filters from '../slices/filtersSlice';
+import selectedItems from '../slices/selectedItemsSlice';
+import popUp from '../slices/popupSlice';
+import { apiSlice } from '../api/apiSlice';
 
 const store = configureStore({
-  reducer: { filters, selectedItems, popUp },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware(),
+  reducer: {
+    filters,
+    selectedItems,
+    popUp,
+    [apiSlice.reducerPath]: apiSlice.reducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(apiSlice.middleware),
   devTools: process.env.NODE_ENV !== 'production',
 });
 

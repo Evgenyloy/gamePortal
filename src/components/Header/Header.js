@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom';
-import { tagsData } from '../../data/data';
-
-import { platformSelected, categorySelected, changePopUp } from '../../actions';
 import { useDispatch, useSelector } from 'react-redux';
+
+import { tagsData } from '../../data/data';
+import { platformSelected, categorySelected } from '../../slices/filtersSlice';
+import { changePopUp } from '../../slices/popupSlice';
 
 import './header.scss';
 

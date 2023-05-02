@@ -4,14 +4,14 @@ import { DiWindows } from 'react-icons/di';
 import { TbBrowser } from 'react-icons/tb';
 import { Transition } from 'react-transition-group';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectGame } from '../../actions';
 
+import { fetchGame } from '../../slices/selectedItemsSlice';
 import usePortalService from '../../services/services';
 import Filter from '../Filter/Filter';
 import Spinner from '../Spinner/Spinner';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
-
 import { transitionStyles, defaultStyle, duration } from '../../data/data';
+
 import '../GameList/gameList.scss';
 
 const GameList = () => {
@@ -78,7 +78,7 @@ const GameList = () => {
   const onGameClick = (item) => {
     localStorage.setItem('selectedGame', JSON.stringify(item));
 
-    dispatch(selectGame(item, getSpecificGame));
+    dispatch(fetchGame(item, getSpecificGame));
   };
 
   const renderItems = (arr) => {
