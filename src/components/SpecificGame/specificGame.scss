@@ -3,7 +3,7 @@
   padding: 50px 0;
   max-width: 950px;
   margin: 0 auto;
-  min-height: 100vh;
+  min-height: 110vh;
   &__title {
     font-weight: 450;
     line-height: 1.2;
@@ -30,6 +30,8 @@
     height: 145px;
     overflow: hidden;
     margin-bottom: 15px;
+    border-radius: 3px;
+    overflow: hidden;
   }
   &__screenshots {
     width: 215px;
@@ -38,9 +40,6 @@
     transition: all 0.15s linear;
     &:hover {
       transform: scale(1.05);
-    }
-    &:not(:last-child) {
-      margin-bottom: 20px;
     }
   }
 
@@ -53,7 +52,6 @@
     object-fit: cover;
     border-radius: 3px;
     transition: all 0.2s linear;
-    margin-bottom: 15px;
   }
   &__information-list,
   &__requirements-list {
@@ -64,7 +62,7 @@
   }
   &__information-title,
   &__requirements-title {
-    font-size: calc(14px + 8 * ((100vw - 320px) / (1280 - 320)));
+    font-size: calc(14px + 10 * ((100vw - 320px) / (1280 - 320)));
     font-weight: 450;
     color: #3e3f3a;
     margin-bottom: 15px;
@@ -103,7 +101,7 @@
     font-size: calc(15px + 5 * (100vw - 320px) / 1600);
     line-height: 1.5;
     color: #3e3f3a;
-    margin-bottom: 20px;
+    margin-bottom: 70px;
     a {
       pointer-events: none;
       color: #3e3f3a;
@@ -151,6 +149,20 @@
     }
   }
 }
+
+.screnshots-block {
+  transition: all 0.2s linear;
+  overflow: hidden;
+}
+
+.screnshots-title {
+  display: block;
+  font-size: 22px;
+  text-align: center;
+  margin-bottom: 20px;
+  color: #666861;
+  cursor: pointer;
+}
 .opacity {
   opacity: 0;
   visibility: 0;
@@ -165,6 +177,7 @@
     &__col-1 {
       display: flex;
       gap: 10px;
+      margin-bottom: 20px;
     }
     &__img-cont {
       width: 150px;
@@ -195,6 +208,16 @@
       height: 720px;
     }
   }
+  .screnshots-title {
+    display: none;
+  }
+  .screnshots-block {
+    height: auto !important;
+    display: flex;
+    gap: 10px;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
 }
 @media (max-width: 500px) {
   .game {
@@ -209,10 +232,10 @@
 @media (max-width: 400px) {
   .game {
     &__img-cont {
-      height: 70px;
+      height: 50px;
     }
     &__screenshots {
-      height: 70px;
+      height: 50px;
     }
   }
-} ;
+}

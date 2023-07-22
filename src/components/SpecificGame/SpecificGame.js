@@ -19,6 +19,7 @@ const SpecificGame = () => {
 
   const [popUp, setPopUp] = useState(false);
   const [popUpImgSrc, setPopUpImgSrc] = useState('');
+  const [screnshotsVisibility, setScrenshotsVisibility] = useState(false);
 
   useEffect(() => {
     document.documentElement.scrollTop = 0;
@@ -37,9 +38,16 @@ const SpecificGame = () => {
     return { __html: selectedGame.description };
   };
 
+  let inlineStyle = screnshotsVisibility
+    ? document.querySelector('.screnshots-block')?.scrollHeight + 'px'
+    : '0';
+
+  const onScrenshotClick = () => {
+    setScrenshotsVisibility(!screnshotsVisibility);
+  };
+
   const renderItem = (selectedGame) => {
     const { thumbnail, title } = selectedGame;
-
     const content = (
       <Transition in timeout={duration} mountOnEnter appear>
         {(state) => (
@@ -53,13 +61,28 @@ const SpecificGame = () => {
 
             <div className="game__wrapper">
               <div className="game__col-1">
-                <div className="game__img-cont">
-                  <img src={thumbnail} alt={title} className="game__img" />
+                <div className="game__img-cont ">
+                  <img
+                    src={thumbnail}
+                    alt={title}
+                    className="game__img main-img"
+                  />
                 </div>
-                <SpecificGameScreenshots
-                  selectedGame={selectedGame}
-                  onImageClick={onImageClick}
-                />
+                <span className="screnshots-title" onClick={onScrenshotClick}>
+                  screenshots
+                </span>
+                <div
+                  className="screnshots-block"
+                  style={{
+                    height: inlineStyle,
+                    opacity: screnshotsVisibility ? '1' : '0',
+                  }}
+                >
+                  <SpecificGameScreenshots
+                    selectedGame={selectedGame}
+                    onImageClick={onImageClick}
+                  />
+                </div>
               </div>
               <div className="game__col-2">
                 <div

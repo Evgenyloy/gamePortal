@@ -10,7 +10,16 @@ import {
   GameList,
   Page404,
 } from '../pages';
-
+//
+//удалить
+const option = {
+  method: 'GET',
+  headers: { 'Content-Type': 'application/json' },
+};
+const fetchh = fetch('http://localhost:8000/db', option);
+fetchh.then((data) => data.json()).then((data) => console.log(data));
+//
+//
 const App = () => {
   return (
     <Router>

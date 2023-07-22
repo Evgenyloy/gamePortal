@@ -33,6 +33,7 @@ const ExploreMmo = () => {
         {(state) =>
           arr.map((item) => {
             const { thumbnail, title, id } = item;
+
             return (
               <div
                 className="mmo__item"

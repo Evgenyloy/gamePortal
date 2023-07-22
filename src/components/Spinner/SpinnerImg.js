@@ -1,7 +1,7 @@
 import './spinner.scss';
 
-const SpinnerImg = (props) => {
-  let spinnerClassName = props.image ? 'spinner-img hidden' : 'spinner-img ';
+const SpinnerImg = ({ image }) => {
+  let spinnerClassName = image ? 'spinner-img hidden' : 'spinner-img';
 
   return (
     <div className={spinnerClassName}>
